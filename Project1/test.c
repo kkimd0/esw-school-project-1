@@ -20,7 +20,6 @@ char device[]= "/dev/ttyACM0";
 // filedescriptor
 int fd;
 unsigned long baud = 9600;
-unsigned long time=0;
  
 //prototypes
 int main(void);
@@ -31,49 +30,29 @@ void setup(){
 
   wiringPiSetupGpio();
  
-  printf("%s \n", "Raspberry Startup!");
-  fflush(stdout);
+  // printf("%s \n", "Raspberry Startup!");
+  // fflush(stdout);
  
   //get filedescriptor
   if ((fd = serialOpen (device, baud)) < 0){
-    fprintf (stderr, "Unable to open serial device: %s\n", strerror (errno)) ;
+    printf ("Unable to open serial device\n");
     exit(1); //error
   }
  
   //setup GPIO in wiringPi mode
   if (wiringPiSetup () == -1){
-    fprintf (stdout, "Unable to start wiringPi: %s\n", strerror (errno)) ;
+    printf ("Unable to start wiringPi\n");
     exit(1); //error
   }
-
-  pinMode(3, OUTPUT);
- 
 }
  
 void loop(){
-  // Pong every 3 seconds
-  if(millis()-time>=3000){
-    serialPuts (fd, "Pong!\n");
-    // you can also write data from 0-255
-    // 65 is in ASCII 'A'
-    serialPutchar (fd, 65);
-    time=millis();
-  }
  
   // read signal
-  if(serialDataAvail (fd)){
-    char newChar = serialGetchar(fd);
-    if(newChar == '1') {
-    	digitalWrite(3, HIGH);
-	// printf("%c", newChar);
-    }
-    else {
-	digitalWrite(3, LOW);
-	// printf("%c", newChar);
-    }
-    fflush(stdout);
+  if(serialDataAvail(fd)) {
+    char data = serialGetchar(fd);
+    printf("%c", data);
   }
- 
 }
  
 // main function for normal c++ programs on Raspberry
