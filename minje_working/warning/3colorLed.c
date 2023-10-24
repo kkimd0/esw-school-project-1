@@ -2,43 +2,43 @@
 
 void init_3colorLed()
 {
-    pinMode(Blue_pin, OUTPUT);
-    pinMode(Green_pin, OUTPUT);
-    pinMode(Red_pin, OUTPUT);
+    pinMode(BLUE_PIN, OUTPUT);
+    pinMode(GREEN_PIN, OUTPUT);
+    pinMode(RED_PIN, OUTPUT);
 }
 
 void turnRed()
 {
-    digitalWrite(Blue_pin, LOW);
-    digitalWrite(Green_pin, LOW);
-    digitalWrite(Red_pin, HIGH);
+    digitalWrite(BLUE_PIN, LOW);
+    digitalWrite(GREEN_PIN, LOW);
+    digitalWrite(RED_PIN, HIGH);
 }
 
 void offRed()
 {
-    digitalWrite(Red_pin, LOW);
+    digitalWrite(RED_PIN, LOW);
 }
 
 void turnGreen()
 {
-    digitalWrite(Blue_pin, LOW);
-    digitalWrite(Green_pin, HIGH);
-    digitalWrite(Red_pin, LOW);
+    digitalWrite(BLUE_PIN, LOW);
+    digitalWrite(GREEN_PIN, HIGH);
+    digitalWrite(RED_PIN, LOW);
 }
 
 void offGreen()
 {
-    digitalWrite(Green_pin, LOW);
+    digitalWrite(GREEN_PIN, LOW);
 }
 
 void turnBlue()
 {
-    digitalWrite(Blue_pin, HIGH);
-    digitalWrite(Green_pin, LOW);
-    digitalWrite(Red_pin, LOW);
+    digitalWrite(BLUE_PIN, HIGH);
+    digitalWrite(GREEN_PIN, LOW);
+    digitalWrite(RED_PIN, LOW);
 }
 
 void offBlue()
 {
-    digitalWrite(Blue_pin, LOW);
+    digitalWrite(BLUE_PIN, LOW);
 }

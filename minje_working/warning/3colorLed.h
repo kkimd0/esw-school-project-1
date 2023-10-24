@@ -2,9 +2,9 @@
 
 #include <wiringPi.h>
 
-#define Red_pin 22
-#define Green_pin 27
-#define Blue_pin 17
+#define RED_PIN 22
+#define GREEN_PIN 27
+#define BLUE_PIN 17
 
 void init_3colorLed();
 void turnRed();
