@@ -1,7 +1,6 @@
-#include <IRremote.h>
+#include <IRremote.hpp>
 
 #define luxPin 14
-
 #define remotePin 15
 
 #define upTrigPin 8
@@ -13,40 +12,37 @@
 #define joyStick_x 16
 #define joyStick_y 17
 
-IRrecv irrecv(remotePin);
-decode_results remoteResult;
 
-unsigned long luxValue;
-unsigned long upDistance;
-unsigned long frontDistance;
-unsigned long joyValueX;
-unsigned long joyValueY;
+uint32_t luxValue;
+uint32_t upDistance;
+uint32_t frontDistance;
+uint32_t joyValueX;
+uint32_t joyValueY;
 
-unsigned long time_Ultra;
-unsigned long time_Lux;
+uint32_t time_Ultra;
+uint32_t time_Lux;
 
-int goUp = 1;
-int goDown = 0;
-volatile int interruptMode_up = goUp;    // 맨 처음에는 echo_phin이 LOW->HIGH로 바뀌는거 감지해야됨 
+uint8_t goUp = 1;
+uint8_t goDown = 0;
+volatile uint8_t interruptMode_up = goUp;    // 맨 처음에는 echo_phin이 LOW->HIGH로 바뀌는거 감지해야됨 
 volatile boolean timeMeasure_up = false;    // 시간측정이 완료되었는지 여부 
-volatile unsigned long startT_up, endT_up ;    //echo_phin  상승시간과  하강시간  저장 변수
+volatile uint32_t startT_up, endT_up ;    //echo_phin  상승시간과  하강시간  저장 변수
 
-volatile int interruptMode_front = goUp;    // 맨 처음에는 echo_phin이 LOW->HIGH로 바뀌는거 감지해야됨 
+volatile uint8_t interruptMode_front = goUp;    // 맨 처음에는 echo_phin이 LOW->HIGH로 바뀌는거 감지해야됨 
 volatile boolean timeMeasure_front = false;    // 시간측정이 완료되었는지 여부 
-volatile unsigned long startT_front, endT_front ;    //echo_phin  상승시간과  하강시간  저장 변수
+volatile uint32_t startT_front, endT_front ;    //echo_phin  상승시간과  하강시간  저장 변수
 
 void setup() {
   // put your setup code here, to run once:
 
   Serial.begin(9600);
 
-  irrecv.enableIRIn();
+  IrReceiver.begin(remotePin, ENABLE_LED_FEEDBACK);    //IRReceiver 초기설정
   
   attachInterrupt(digitalPinToInterrupt(upEchoPin), soundDetection_up, RISING);
   attachInterrupt(digitalPinToInterrupt(frontEchoPin), soundDetection_front, RISING);
 
   pinMode(luxPin, INPUT);
-  pinMode(remotePin, INPUT);
 
   pinMode(upTrigPin, OUTPUT);
   pinMode(upEchoPin, INPUT);
@@ -79,7 +75,7 @@ void loop() {
  }
 
  if(timeMeasure_up) { // 시간측정이 완료되었다면 
-  unsigned long duration = endT_up - startT_up;            //echo_pin이 발생한 HIGH였던 시간 측정 (echo_pin)은 거리가 길수록 HIGH를 오랫동안 유지 
+  uint32_t duration = endT_up - startT_up;            //echo_pin이 발생한 HIGH였던 시간 측정 (echo_pin)은 거리가 길수록 HIGH를 오랫동안 유지 
   upDistance = ((340 * duration) / 10000) / 2; // 천장거리 저장
 //  upDistance = normalize(upDistance, 0, 255);
   String value = String(upDistance);
@@ -89,7 +85,7 @@ void loop() {
  }
 
  if(timeMeasure_front) { // 시간측정이 완료되었다면 
-  unsigned long duration = endT_front - startT_front;            //echo_pin이 발생한 HIGH였던 시간 측정 (echo_pin)은 거리가 길수록 HIGH를 오랫동안 유지 
+  uint32_t duration = endT_front - startT_front;            //echo_pin이 발생한 HIGH였던 시간 측정 (echo_pin)은 거리가 길수록 HIGH를 오랫동안 유지 
   frontDistance = ((340 * duration) / 10000) / 2; // 앞차와의 거리 저장
 //  frontDistance = normalize(frontDistance, 0, 255);
   String value = String(frontDistance);
@@ -113,11 +109,14 @@ void loop() {
  
 
  /* Infrared Sensor */
-// if(irrecv.decode(remoteResult) {
-//  Serial.print("적외선 : ");
-//  Serial.println(remoteResult.value, HEX);
-//  Serial.println("");
-// }
+ if(IrReceiver.decode())
+ {
+  uint32_t IrRawData = IrReceiver.decodedIRData.decodedRawData;
+  Serial.println(IrRawData);
+  //Switch - Case문 작성 필요
+  IrReceiver.resume();
+ }
+
 
 
 
@@ -154,6 +153,6 @@ void soundDetection_front() {
   }
 }
 
-int normalize(unsigned long value, int min, int max) {
+int16_t normalize(uint32_t value, int16_t min, int16_t max) {
     return (value - min) * 255 / (max - min);
 }
