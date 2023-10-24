@@ -29,13 +29,16 @@ void setup(void);
 int upDistance = 0;
 int frontDistance = 0;
 int luxValue = 0;
+int infraedValue = 0;
+int joyValue = 0;
+
+char buffer[256];
+int index_buf = 0;
+char testletter = 'q';
  
 void setup(){
 
   wiringPiSetupGpio();
- 
-  // printf("%s \n", "Raspberry Startup!");
-  // fflush(stdout);
  
   //get filedescriptor
   if ((fd = serialOpen (device, baud)) < 0){
@@ -50,47 +53,55 @@ void setup(){
   }
 }
  
-void loop(){
-
-  char buffer[256];
-  int index = 0;
+void loop() {
 
   if(serialDataAvail(fd)) {
     char c = serialGetchar(fd);
+    int flag = strcmp(&c, &testletter);
 
-    if(c == '\n') {
+    if(flag < 0) {
+    	buffer[index_buf] = c;
+	index_buf = index_buf + 1;
+    	if(index_buf >= sizeof(buffer)) {
+		index_buf--;
+ 	}
+    }
 
-    buffer[index] = '\0';
+    else {
+    	buffer[index_buf] = '\0';
 
-    char sensor[16];
-    int value;
+    	char sensor[16];
+    	int value;
 
-    sscanf(buffer, "%[^:]:%d", sensor, &value);
+    	sscanf(buffer, "%[^:]:%d", sensor, &value);
  
-    // read signal
-    if(strcmp(sensor, "UP") == 0) {
-       upDistance = value; 
-    } 
-    else if(strcmp(sensor, "FRONT") == 0) {
-       frontDistance = value; 
-    } 
-    else if(strcmp(sensor, "LUX") == 0) {
-       luxValue = value; 
-    }
+	// read signal
+    	if(strcmp(sensor, "UP") == 0) {
+            upDistance = value; 
+    	} 
+    	else if(strcmp(sensor, "FRONT") == 0) {
+            frontDistance = value; 
+    	} 
+    	else if(strcmp(sensor, "LUX") == 0) {
+            luxValue = value; 
+    	}
+	else if(strcmp(sensor, "INFRAED") == 0) {
+	    infraedValue = value;
+	}
+	else if(strcmp(sensor, "JOY") == 0) {
+	    joyValue = value;
+	}
 
-    printf("UP: %d\n", upDistance);
-    printf("FRONT: %d\n", frontDistance);
-    printf("LUX: %d\n", luxValue);
+    	printf("UP: %d\n", upDistance);
+    	printf("FRONT: %d\n", frontDistance);
+    	printf("LUX: %d\n", luxValue);
+	printf("INFRAED: %d\n", infraedValue);
+	printf("JOY_Z: %d\n", joyValue);
 
-    index = 0;
-    }
-  else {
-    buffer[index++] = c;
-    if(index >= sizeof(buffer)) {
-	index--;
+        index_buf = 0;
+     	memset(buffer, 0, sizeof(buffer)); // buffer
     }
   }
-}
 }
  
 // main function for normal c++ programs on Raspberry
