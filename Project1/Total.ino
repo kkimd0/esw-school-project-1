@@ -72,57 +72,57 @@ void loop() {
     
     digitalWrite(upTrigPin, LOW); // 일단 LOW, 좀있다 HIGH로 바꿔줘서 펄스 발생 
     digitalWrite(frontTrigPin, LOW);
- }
+  }
 
- if(timeMeasure_up) { // 시간측정이 완료되었다면 
-  uint32_t duration = endT_up - startT_up;            //echo_pin이 발생한 HIGH였던 시간 측정 (echo_pin)은 거리가 길수록 HIGH를 오랫동안 유지 
-  upDistance = ((340 * duration) / 10000) / 2; // 천장거리 저장
+  if(timeMeasure_up) { // 시간측정이 완료되었다면 
+    uint32_t duration = endT_up - startT_up;            //echo_pin이 발생한 HIGH였던 시간 측정 (echo_pin)은 거리가 길수록 HIGH를 오랫동안 유지 
+    upDistance = ((340 * duration) / 10000) / 2; // 천장거리 저장
 //  upDistance = normalize(upDistance, 0, 255);
-  String value = String(upDistance);
-  Serial.print("UP:");
-  Serial.println(value);
-  timeMeasure_up = false;  //다음 번 측정을 위해 초기화
- }
+    String value = String(upDistance);
+    Serial.print("UP:");
+    Serial.println(value);
+    timeMeasure_up = false;  //다음 번 측정을 위해 초기화
+  }
 
- if(timeMeasure_front) { // 시간측정이 완료되었다면 
-  uint32_t duration = endT_front - startT_front;            //echo_pin이 발생한 HIGH였던 시간 측정 (echo_pin)은 거리가 길수록 HIGH를 오랫동안 유지 
-  frontDistance = ((340 * duration) / 10000) / 2; // 앞차와의 거리 저장
+  if(timeMeasure_front) { // 시간측정이 완료되었다면 
+    uint32_t duration = endT_front - startT_front;            //echo_pin이 발생한 HIGH였던 시간 측정 (echo_pin)은 거리가 길수록 HIGH를 오랫동안 유지 
+    frontDistance = ((340 * duration) / 10000) / 2; // 앞차와의 거리 저장
 //  frontDistance = normalize(frontDistance, 0, 255);
-  String value = String(frontDistance);
-  Serial.print("FRONT:");
-  Serial.println(value);
-  timeMeasure_front = false;  //다음 번 측정을 위해 초기화
- }
+    String value = String(frontDistance);
+    Serial.print("FRONT:");
+    Serial.println(value);
+    timeMeasure_front = false;  //다음 번 측정을 위해 초기화
+  }
 
 
 
  /* Lux Sensor */
- if(millis() - time_Lux > 1000) {  //2초 이상 이면
-  time_Lux = millis() ; //현재 시간을 이전시간에 저장
-  luxValue = analogRead(luxPin);
-  String value = String(luxValue);
+  if(millis() - time_Lux > 1000) {  //2초 이상 이면
+    time_Lux = millis() ; //현재 시간을 이전시간에 저장
+    luxValue = analogRead(luxPin);
+    String value = String(luxValue);
 //  luxValue = normalize(luxValue, 0, 1500);
-  Serial.print("LUX:");
-  Serial.println(value);
- }
+    Serial.print("LUX:");
+    Serial.println(value);
+  }
 
  
 
- /* Infrared Sensor */
- if(IrReceiver.decode())
- {
-  uint32_t IrRawData = IrReceiver.decodedIRData.decodedRawData;
-  Serial.println(IrRawData);
+  /* Infrared Sensor */
+  if(IrReceiver.decode())
+  {
+    uint32_t IrRawData = IrReceiver.decodedIRData.decodedRawData;
+    Serial.println(IrRawData);
   //Switch - Case문 작성 필요
-  IrReceiver.resume();
- }
+    IrReceiver.resume();
+  }
 
 
 
 
- /* joyStick Sensor */
-// joyValueX = analogRead(joyStick_x);
-// joyValueY = analogRead(joyStick_y);
+  /* joyStick Sensor */
+  // joyValueX = analogRead(joyStick_x);
+  // joyValueY = analogRead(joyStick_y);
 }
 
 void soundDetection_up() {
@@ -155,4 +155,21 @@ void soundDetection_front() {
 
 int16_t normalize(uint32_t value, int16_t min, int16_t max) {
     return (value - min) * 255 / (max - min);
+}
+
+/* 조도센서 (cds sensor) */
+int16_t getLux()
+{
+  int16_t readValue = analogRead(luxPin);
+  // 정상상태이면 값을 저장한 후 1을 반환하고, 비정상상태이면 -1을 반환한다.
+  if(readValue > 0)
+  {
+    luxValue = readValue;
+    return 1;
+  }
+  else
+  {
+    luxValue = -1;
+    return -1;
+  }
 }
