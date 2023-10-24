@@ -2,10 +2,11 @@
 #include <wiringPi.h>
 #include <softPwm.h> 
 
-#define SERVO 1
+#define SERVO 2
 
 int main()
 {
+    wiringPiSetupGpio();
     char sel;
 
     if(wiringPiSetup()==-1)
@@ -18,9 +19,9 @@ int main()
         fputs("select c, r, l, q: " , stdout);
         scanf("%c" , &sel);
         getchar();
-        if(sel == 'c') softPwmWrite(SERVO, 5);   // 0 degree
-        else if(sel == 'r') softPwmWrite(SERVO, 10); // 90 degree
-        else if(sel == 'l') softPwmWrite(SERVO, 7); // -90 degree
+        if(sel == 'c') softPwmWrite(SERVO, 15);   // 0 degree
+        else if(sel == 'r') softPwmWrite(SERVO, 24); // 90 degree
+        else if(sel == 'l') softPwmWrite(SERVO, 5); // -90 degree
         else if(sel == 'q') return 0;
     }   
 
