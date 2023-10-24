@@ -88,6 +88,43 @@ int main()
 	printf("init complete\n");
 	module_test();
 	
+<<<<<<< HEAD
+=======
+	printf("step_motor one_cycle_rotation start\n");
+	one_cycle_rotation();
+	motor_reset();
+	printf("step_motor one_cycle_rotation complete\n");
+
+	sleep(3);
+	
+	printf("step_motor one_cycle_reverse_rotation start\n");
+	one_cycle_reverse_rotation();
+	motor_reset();
+	printf("step_motor one_cycle_reverse_rotation complete\n");
+	
+	sleep(1);
+	printf("servo_motor test start\n");
+	angle(0, 180);
+	sleep(1);
+	angle(180,0);
+	sleep(1);
+	printf("servo_motor test complete\n");
+	
+	sleep(1);
+	printf("3LED turn green\n");
+    	turnGreen();
+	printf("3LED turn green complete\n");
+    	sleep(3);
+
+	printf("test warningSound start\n");
+    	for(int i=0; i<5; i++)
+	{
+        	warningSound();
+    	}
+	printf("test warningSound complete\n");
+
+	printf("All test complete\n");
+>>>>>>> c79caa4af6c404f4736b7b51edbf9f9cc6a7220b
 	return 0;
 }
 

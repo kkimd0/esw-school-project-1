@@ -3,29 +3,30 @@
 void init_buzzer()
 {
     
-    pinMode(buzzer_pin, PWM_OUTPUT);
-    pwmSetClock(19);
+    pinMode(BUZZER_PIN, PWM_OUTPUT);
     pwmSetMode(PWM_MODE_MS);
 }
 
 void setWarningSound()
 {
-    pwmSetRange(1000000/1174);
-    pwmWrite(buzzer_pin, 1000000/1174/2);
+    pwmSetClock(19);
+    pwmSetRange(MICROSECOND/NOTE_D6);
+    pwmWrite(BUZZER_PIN, MICROSECOND/NOTE_D6 * DUTY_CYCLE);
 }
 
 void warningSound()
 {
     setWarningSound();
+    
     turnRed();
     delay(200);
-    pwmWrite(buzzer_pin,0);
+    pwmWrite(BUZZER_PIN,0);
     offRed();
     delay(100);
     setWarningSound();
     turnRed();
     delay(100);
-    pwmWrite(buzzer_pin,0);
+    pwmWrite(BUZZER_PIN,0);
     offRed();
     delay(500);
 }
