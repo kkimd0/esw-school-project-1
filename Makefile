@@ -3,7 +3,7 @@
 #.PHONY: packages
 
 CC= gcc
-CFLAGS= -W -Wall -I/usr/local/include
+CFLAGS= -W -Wall
 TARGET= run
 LDLIBS = -lwiringPi
 OBJECTS = main.o $(CURDIR)/step_motor/step_motor.o $(CURDIR)/minje_working/motor/servo_motor.o \
@@ -28,5 +28,10 @@ main.o: main.c
 	$(CC) $(CFLAGS) -o main.o -c main.c
 
 clean:
-	rm -f $(OBJECTS)
+	rm -f $(CURDIR)/main.o
+	rm -f $(CURDIR)/step_motor/step_motor.o 
+	rm -f $(CURDIR)/minje_working/motor/servo_motor.o
+	rm -f $(CURDIR)/minje_working/warning/buzzer.o
+	rm -f $(CURDIR)/minje_working/warning/3colorLed.o
 	rm -f $(TARGET)
+
