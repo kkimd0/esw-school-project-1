@@ -32,16 +32,14 @@ int main()
 	printf("step_motor one_cycle_reverse_rotation complete\n");
 	
 	sleep(1);
-	
 	printf("servo_motor test start\n");
 	angle(0, 180);
-	delay(200);
+	sleep(1);
 	angle(180,0);
-	delay(200);
+	sleep(1);
 	printf("servo_motor test complete\n");
 	
 	sleep(1);
-	
 	printf("3LED turn green\n");
     	turnGreen();
 	printf("3LED turn green complete\n");
