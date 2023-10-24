@@ -3,7 +3,7 @@
  * step_motor_control
  * write by siyun
  */
-
+#pragma once
 #include <unistd.h>
 #include <wiringPi.h>
 #include <stdint.h>
@@ -15,7 +15,7 @@
 static uint32_t motorDelay;
 
 // motor setting function
-void step_motor_set();
+void init_step_motor();
 
 // motor reset
 void motor_reset();

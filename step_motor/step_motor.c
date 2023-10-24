@@ -6,9 +6,8 @@
 #include "step_motor.h"
 void motor_step(uint8_t step);
 
-void step_motor_set()
+void init_step_motor()
 {
-	wiringPiSetupGpio();
 	pinMode(IN1, OUTPUT);
 	pinMode(IN2, OUTPUT);
 	pinMode(IN3, OUTPUT);

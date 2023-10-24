@@ -1,17 +1,15 @@
-#pragma once
+#include "servo_motor.h"
 
-#include <wiringPi.h>
-
-#define motor_pin 12
-
-void init_motor(){
+void init_motor()
+{
     pinMode ( motor_pin ,  PWM_OUTPUT ); 
     pwmSetMode ( PWM_MODE_MS ); 
     pwmSetClock ( 400 ); 
     pwmSetRange ( 1024 );
 }
 
-void angle(int status, int value){
+void angle(int status, int value)
+{
 
     if(status < value)
     {
@@ -31,4 +29,3 @@ void angle(int status, int value){
     }
 
 }
-
