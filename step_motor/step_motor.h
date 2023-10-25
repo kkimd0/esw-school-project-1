@@ -20,15 +20,15 @@ void init_step_motor();
 // motor reset
 void motor_reset();
 
-// (5.625) angle forward rotation
-// 64 active for 1 cycle
+// (0.703125) angle forward rotation
+// 512 active for 1 cycle
 void one_step_rotation();
 
 // 1 cycle forward rotation
 void one_cycle_rotation();
 
-// (5.625) angle backward rotation
-// 64 active for 1 cycle
+// (0.703125) angle backward rotation
+// 512 active for 1 cycle
 void one_step_reverse_rotation();
 
 // 1 cycle backward rotation

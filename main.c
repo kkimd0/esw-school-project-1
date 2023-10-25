@@ -82,12 +82,22 @@ void module_test()
 	}
 }
 
+int8_t mainloop()
+{
+	return 0;
+}
+
 int main()
 {
 	init();
 	printf("init complete\n");
 	module_test();
 
+	int8_t er;
+	while ( 0 )
+	{
+		er = mainloop();
+	}
 	return 0;
 }
 
