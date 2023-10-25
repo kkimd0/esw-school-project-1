@@ -7,7 +7,7 @@
 #include <stdlib.h> //for exit(int);
 #include <string.h> //for errno
 #include <errno.h> //error output
- 
+
 //wiring Pi
 #include <wiringPi.h>
 #include <wiringSerial.h>
@@ -34,9 +34,9 @@ int joyValue = 0;
 
 char buffer[256];
 int index_buf = 0;
-char testletter = 'q';
+char testletter = '~';
  
-void setup(){
+void setup() {
 
   wiringPiSetupGpio();
  
@@ -51,6 +51,8 @@ void setup(){
     printf ("Unable to start wiringPi\n");
     exit(1); //error
   }
+
+  // delay(7000);
 }
  
 void loop() {
@@ -58,6 +60,7 @@ void loop() {
   if(serialDataAvail(fd)) {
     char c = serialGetchar(fd);
     int flag = strcmp(&c, &testletter);
+    // printf("%d\n", flag);
 
     if(flag < 0) {
     	buffer[index_buf] = c;

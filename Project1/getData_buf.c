@@ -51,6 +51,8 @@ void setup(){
     printf ("Unable to start wiringPi\n");
     exit(1); //error
   }
+
+  // delay(7000);
 }
  
 void loop() {
