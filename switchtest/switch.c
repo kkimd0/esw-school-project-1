@@ -1,11 +1,14 @@
 #include <stdio.h>
 #include <wiringPi.h>
-
+#include <stdint.h>
 #define GPIO_testSwitch 15
+
+uint8_t CurrMode = 0;
 
 void switch_toggle_callback()
 {
 	printf("%s\n", "Switch toggled");
+	CurrMode = !CurrMode;
 }
 
 int main()
