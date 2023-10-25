@@ -4,29 +4,41 @@ void init_buzzer()
 {
     
     pinMode(BUZZER_PIN, PWM_OUTPUT);
+    pwmSetClock(RAS_CLOCK);
     pwmSetMode(PWM_MODE_MS);
 }
 
-void setWarningSound()
+void setNote(int note)
 {
-    pwmSetClock(19);
-    pwmSetRange(MICROSECOND/NOTE_D6);
-    pwmWrite(BUZZER_PIN, MICROSECOND/NOTE_D6 * DUTY_CYCLE);
+    pwmSetRange(MICROSECOND/note);
+    pwmWrite(BUZZER_PIN, MICROSECOND/note * DUTY_CYCLE);
 }
 
-void warningSound()
+void frontWarningSound()
 {
-    setWarningSound();
-    
+    setNote(NOTE_D6);
+
     turnRed();
     delay(200);
     pwmWrite(BUZZER_PIN,0);
     offRed();
     delay(100);
-    setWarningSound();
+
+    setNote(NOTE_D6);
+
     turnRed();
     delay(100);
     pwmWrite(BUZZER_PIN,0);
     offRed();
     delay(500);
+}
+
+void sideLaneWarningSound()
+{
+    turnRed();
+    for(int i = NOTE_D4; i< NOTE_G5;i++){
+        setNote(i);
+        delay(10);
+    }
+    offRed();
 }
