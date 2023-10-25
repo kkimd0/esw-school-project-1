@@ -6,10 +6,10 @@ int main(){
     wiringPiSetupGpio();
     init_motor();
 
-    setAngleFast(180);
+    setAngleFast(0);
 
     while(1){
-        // setAngleFast(180);
+        // setAngleFast(10);
         // delay(500);
         // setAngleFast(0);
         // delay(500);

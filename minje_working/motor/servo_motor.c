@@ -26,14 +26,14 @@ void setAngleSlow(int start, int end)
     if(start <= end){
         for(int i = start * MOTOR_PULSE; i <= end * MOTOR_PULSE; i++){
             pwmWrite(MOTOR_PIN, i + 20);
-            delay(30);
+            delay(20);
         }
     }
     else
     {
         for(int i = start * MOTOR_PULSE; i >= end * MOTOR_PULSE; i--){
             pwmWrite(MOTOR_PIN, i + 20);
-            delay(30);
+            delay(20);
         }
     }
 }
