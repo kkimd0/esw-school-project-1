@@ -1,8 +1,20 @@
+/*
+  [상태 출력 LCD 모듈]
+  void usePrint_LCD()의 인자에 따라 LCD 출력 선택 (500 ms 주기)
+
+  -1 이면, "Warning!!", "Warning!!" 출력
+  0 이면, "In Tunnel", "Auto mode" 출력
+  1 이면, "In Tunnel", "Manual mode" 출력
+  2 이면, "OutSide Tunnel", "Manual mode" 출력
+  3 이면, "OutSide Tunnel", "Auto mode" 출력
+*/
+
 #include "LCD.h"
 #include <wiringPiI2C.h>
 #include <wiringPi.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdint.h>
 
 int main()   {
 
@@ -13,9 +25,11 @@ int main()   {
   lcd_init(); // setup LCD
   
   while (1)   {
-    printLCD("<Mode selection>", "Auto mode");
-    printLCD("<Mode selection>", "Manual mode");
-    printLCD("Warning!!", "Warning!!");
+    usePrint_LCD(-1);
+    usePrint_LCD(0);
+    usePrint_LCD(1);
+    usePrint_LCD(2);
+    usePrint_LCD(3);
   }
 
   return 0;
@@ -23,13 +37,13 @@ int main()   {
 
 
 
-void lcd_byte(int bits, int mode)   {
+void lcd_byte(int32_t bits, int32_t mode)   {
 
   //Send byte to data pins
   // bits = the data
   // mode = 1 for data, 0 for command
-  int bits_high;
-  int bits_low;
+  int32_t bits_high;
+  int32_t bits_low;
   // uses the two half byte writes to LCD
   bits_high = mode | (bits & 0xF0) | LCD_BACKLIGHT ;
   bits_low = mode | ((bits << 4) & 0xF0) | LCD_BACKLIGHT ;
@@ -43,7 +57,7 @@ void lcd_byte(int bits, int mode)   {
   lcd_toggle_enable(bits_low);
 }
 
-void lcd_toggle_enable(int bits)   {
+void lcd_toggle_enable(int32_t bits)   {
   // Toggle enable pin on LCD display
   delayMicroseconds(500);
   wiringPiI2CReadReg8(fd, (bits | ENABLE));
@@ -70,7 +84,7 @@ void ClrLcd(void)   {
 }
 
 // go to location on LCD
-void lcdLoc(int line)   {
+void lcdLoc(int32_t line)   {
   lcd_byte(line, LCD_CMD);
 }
 
@@ -79,6 +93,7 @@ void typeln(const char *s)   {
   while ( *s ) lcd_byte(*(s++), LCD_CHR);
 }
 
+
 void printLCD(const char *s_Line1, const char *s_Line2)  {
     ClrLcd();
     lcdLoc(LINE1);
@@ -86,4 +101,26 @@ void printLCD(const char *s_Line1, const char *s_Line2)  {
     lcdLoc(LINE2);
     typeln(s_Line2);
     delay(500);
+}
+
+void usePrint_LCD(int32_t selectString) {
+  switch (selectString) {
+    case -1 :
+      printLCD("Warning!!", "Warning!!");
+      break;
+    case 0 :
+      printLCD("In Tunnel", "Auto mode");
+      break;
+    case 1 :
+      printLCD("In Tunnel", "Manual mode");
+      break;
+    case 2 :
+      printLCD("OutSide Tunnel", "Manual mode");
+      break;
+    case 3 :
+      printLCD("OutSide Tunnel", "Auto mode");
+      break;
+    default :
+      break;
+  }
 }

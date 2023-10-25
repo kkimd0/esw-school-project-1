@@ -24,3 +24,4 @@ void typeln(const char *s);
 int fd;  // seen by all subroutines
 
 void printLCD(const char *s_Line1, const char *s_Line2);
+void usePrint_LCD(int selectString);
