@@ -4,13 +4,13 @@
 #include "minje_working/warning/buzzer.h"
 #include "sensor.h"
 
-#define MODULE_TEST			1
+#define MODULE_TEST		1
 /* == if MODULE_TEST is 0, disable the test below == */
-#define STEP_MOTOR_TEST 	1
-#define SERVO_MOTOR_TEST 	1
-#define LED_TEST 			1
-#define BUZZER_TEST 		1
-#define SENSOR_READ_TEST 	1
+#define STEP_MOTOR_TEST		0
+#define SERVO_MOTOR_TEST	0
+#define LED_TEST		0
+#define BUZZER_TEST		0
+#define SENSOR_READ_TEST	1
 /* ================================================= */
 
 void init()
@@ -80,7 +80,7 @@ void module_test()
 	if ( SENSOR_READ_TEST )
 	{
 		printf("sensor reading test start\n");
-		for (int8_t i=0; i<5; i++)
+		while(1)
 		{
 			read_sensor();
 			printf("UP: %d\n", upDistance);
