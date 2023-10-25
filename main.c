@@ -36,10 +36,10 @@ void init()
 
 int8_t mainloop()
 {
-	static bool servo_motor_flag = false;
-	static bool step_motor_flag = false;
-	static bool front_buzzer_flag = false;
-	static bool side_buzzer_flag = false;
+	static int8_t servo_motor_flag = 0;
+	static int8_t step_motor_flag = 0;
+	static int8_t front_buzzer_flag = 0;
+	static int8_t side_buzzer_flag = 0;
 	
 	// read_sensor();
 	/* 
@@ -52,18 +52,21 @@ int8_t mainloop()
 	
 	if ( !front_buzzer_flag && frontDistance < 100 )
 	{
-		front_buzzer_flag = true;
+		printf("front_buzzer!!\n");
+		front_buzzer_flag = 1;
 		frontWarningSound();
-		front_buzzer_flag = false;
+		front_buzzer_flag = 0;
 		frontDistance = 150;
 	}
 	
 	if ( !side_buzzer_flag && upDistance < 100 )
 	{
-		side_buzzer_flag = true;
-		sideLaneWarningSound();
-		side_buzzer_flag = false;
+		printf("side_test!!\n");
+		side_buzzer_flag = 1;
+		turnGreen();
+		side_buzzer_flag = 0;
 		upDistance = 120;
+		offGreen();
 	}
 	
 	frontDistance--;
