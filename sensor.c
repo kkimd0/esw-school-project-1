@@ -1,6 +1,6 @@
 #include "sensor.h"
 
-uint32_t fd;
+static uint32_t fd;
 uint32_t upDistance = 0;
 uint32_t frontDistance = 0;
 uint32_t luxValue = 0;
@@ -75,8 +75,6 @@ void read_sensor()
 				joyValue = value;
 			}
 			
-			printf("%s, %d\n", sensor, value);
-
 			index_buf = 0;
 			memset(buffer, 0, sizeof(buffer)); // buffer
 		}

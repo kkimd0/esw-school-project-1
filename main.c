@@ -1,18 +1,29 @@
+/*
+ * main program
+ * 1. execute init() function.
+ * 2. if MODULE_TEST is 1, it'll start module test.
+ * 3. if MAINLOOP is 1, main program loop will start.
+ ** 4. now, error code and flag is making.
+ * write by siyun
+ */
+
 #include "step_motor/step_motor.h"
 #include "minje_working/motor/servo_motor.h"
 #include "minje_working/warning/3colorLed.h"
 #include "minje_working/warning/buzzer.h"
 #include "sensor.h"
 
-#define MODULE_TEST		1
+#define MAINLOOP		1
+#define MODULE_TEST		0
 /* == if MODULE_TEST is 0, disable the test below == */
 #define STEP_MOTOR_TEST		0
 #define SERVO_MOTOR_TEST	0
 #define LED_TEST		0
 #define BUZZER_TEST		0
-#define SENSOR_READ_TEST	1
+#define SENSOR_READ_TEST	0
 /* ================================================= */
 
+void module_test();
 void init()
 {
 	wiringPiSetupGpio();
@@ -22,6 +33,61 @@ void init()
 	init_buzzer();
 	init_sensor();
 }
+
+int8_t mainloop()
+{
+	static bool servo_motor_flag = false;
+	static bool step_motor_flag = false;
+	static bool front_buzzer_flag = false;
+	static bool side_buzzer_flag = false;
+	
+	// read_sensor();
+	/* 
+	 * upDistance		: upper ultrasonic sensor
+	 * frontDistance	: front ultrasonic sensor
+	 * luxValue 		: illumination sensor
+	 * infraedValue		: infrared sensors (remote control)
+	 * joyValue 		: joystick sensor
+	 */
+	
+	if ( !front_buzzer_flag && frontDistance < 100 )
+	{
+		front_buzzer_flag = true;
+		frontWarningSound();
+		front_buzzer_flag = false;
+		frontDistance = 150;
+	}
+	
+	if ( !side_buzzer_flag && upDistance < 100 )
+	{
+		side_buzzer_flag = true;
+		sideLaneWarningSound();
+		side_buzzer_flag = false;
+		upDistance = 120;
+	}
+	
+	frontDistance--;
+	upDistance--;
+	return 0;
+}
+
+int main()
+{
+	init();
+	printf("init complete\n");
+	if ( MODULE_TEST )
+	{
+		module_test();
+	}
+
+	int8_t er;
+	while ( MAINLOOP )
+	{
+		er = mainloop();
+	}
+	return 0;
+}
+
 
 void module_test()
 {
@@ -80,7 +146,7 @@ void module_test()
 	if ( SENSOR_READ_TEST )
 	{
 		printf("sensor reading test start\n");
-		while(1)
+		for (uint8_t i=0; i<100; i++)
 		{
 			read_sensor();
 			printf("UP: %d\n", upDistance);
@@ -96,26 +162,3 @@ void module_test()
 
 	printf("All test complete\n");
 }
-
-int8_t mainloop()
-{
-	return 0;
-}
-
-int main()
-{
-	init();
-	printf("init complete\n");
-	if ( MODULE_TEST )
-	{
-		module_test();
-	}
-
-	int8_t er;
-	while ( 0 )
-	{
-		er = mainloop();
-	}
-	return 0;
-}
-

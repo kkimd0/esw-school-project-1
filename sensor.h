@@ -25,7 +25,6 @@
 // FTDI_PROGRAMMER "/dev/ttyUSB0"
 // HARDWARE_UART "/dev/ttyAMA0"
 // filedescriptor
-extern uint32_t fd;
 extern uint32_t upDistance;
 extern uint32_t frontDistance;
 extern uint32_t luxValue;
