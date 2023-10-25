@@ -3,7 +3,9 @@
  * step_motor_control
  * write by siyun
  */
-#pragma once
+#ifndef __STEP_MOTOR_H__
+#define __STEP_MOTOR_H__
+
 #include <unistd.h>
 #include <wiringPi.h>
 #include <stdint.h>
@@ -38,3 +40,5 @@ void one_cycle_reverse_rotation();
 // higher motor delay, slower
 // max speed delay value: 700
 void set_motor_speed(uint32_t motor_delay);
+
+#endif

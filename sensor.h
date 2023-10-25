@@ -3,7 +3,8 @@
  * Public header files for receiving and using sensor value
  * write by siyun
  */
-#pragma once
+#ifndef __SENSOR_H__
+#define __SENSOR_H__
 //include system librarys
 #include <stdio.h> //for printf
 #include <stdint.h> //uint8_t definitions
@@ -15,42 +16,25 @@
 #include <wiringPi.h>
 #include <wiringSerial.h>
 
-#define serialBaud 9600
+#define SERIALBAUD 9600
+#define DEVICE "/dev/ttyACM0"
 
 // Find Serial device on Raspberry with ~ls /dev/tty*
 // ARDUINO_UNO "/dev/ttyACM0"
 // FTDI_PROGRAMMER "/dev/ttyUSB0"
 // HARDWARE_UART "/dev/ttyAMA0"
-int8_t device[]= "/dev/ttyACM0";
 // filedescriptor
-uint32_t fd;
-unsigned long baud = 9600;
-uint32_t upDistance = 0;
-uint32_t frontDistance = 0;
-uint32_t luxValue = 0;
-uint32_t infraedValue = 0;
-uint32_t joyValue = 0;
+extern uint32_t fd;
+extern uint32_t upDistance;
+extern uint32_t frontDistance;
+extern uint32_t luxValue;
+extern uint32_t infraedValue;
+extern uint32_t joyValue;
 
+// init sensor setting
+void init_sensor();
 
-char buffer[256];
-int index_buf = 0;
-char testletter = 'q';
+// read all sensor value
+void read_sensor();
 
-
-void setup(){
-
-  wiringPiSetupGpio();
- 
-  //get filedescriptor
-  if ((fd = serialOpen (device, baud)) < 0){
-    printf ("Unable to open serial device\n");
-    exit(1); //error
-  }
- 
-  //setup GPIO in wiringPi mode
-  if (wiringPiSetup () == -1){
-    printf ("Unable to start wiringPi\n");
-    exit(1); //error
-  }
-}
- 
+#endif
