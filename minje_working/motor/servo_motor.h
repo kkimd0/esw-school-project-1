@@ -9,4 +9,6 @@ void init_motor();
 void setServo();
 void setAngleFast(int angle);
 void setAngleSlow(int start, int end);
+void IR_Window_Up(int* currangle);
+void IR_Window_Down(int* currangle);
 #endif
