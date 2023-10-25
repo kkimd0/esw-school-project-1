@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __BUZZER_H__
+#define __BUZZER_H__
 
 #include <wiringPi.h>
 #include "3colorLed.h"
@@ -15,3 +16,7 @@ void init_buzzer();
 void setNote();
 void frontWarningSound();
 void sideLaneWarningSound();
+void setWarningSound();
+void warningSound();
+
+#endif

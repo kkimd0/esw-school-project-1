@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __3COLORLED_H__
+#define __3COLORLED_H__
 
 #include <wiringPi.h>
 
@@ -13,3 +14,5 @@ void turnGreen();
 void offGreen();
 void turnBlue();
 void offBlue();
+
+#endif

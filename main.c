@@ -11,6 +11,7 @@ void init()
 	init_motor();
 	init_3colorLed();
 	init_buzzer();
+	init_sensor();
 }
 
 void module_test()
@@ -62,11 +63,29 @@ void module_test()
 	if ( 1 )
 	{
 		printf("buzzer test start\n");
-		for(int i=0; i<5; i++)
+		for(int8_t i=0; i<5; i++)
 		{
 			warningSound();
 		}
 		printf("buzzer test complete\n");
+		
+		sleep(1);
+		cnt++;
+	}
+	
+	if ( 1 )
+	{
+		printf("sensor reading test start\n");
+		for (int8_t i=0; i<5; i++)
+		{
+			read_sensor();
+			printf("UP: %d\n", upDistance);
+			printf("FRONT: %d\n", frontDistance);
+			printf("LUX: %d\n", luxValue);
+			printf("INFRAED: %d\n", infraedValue);
+			printf("JOY_Z: %d\n", joyValue);
+		}
+		printf("sensor reading test complete\n");
 		
 		sleep(1);
 		cnt++;
