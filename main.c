@@ -56,7 +56,7 @@ int8_t mainloop()
 		front_buzzer_flag = 1;
 		frontWarningSound();
 		front_buzzer_flag = 0;
-		frontDistance = 150;
+		frontDistance = 1000;
 	}
 	
 	if ( !side_buzzer_flag && upDistance < 100 )
@@ -65,7 +65,7 @@ int8_t mainloop()
 		side_buzzer_flag = 1;
 		turnGreen();
 		side_buzzer_flag = 0;
-		upDistance = 120;
+		upDistance = 1000;
 		offGreen();
 	}
 	

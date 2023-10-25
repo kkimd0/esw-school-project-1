@@ -1,7 +1,6 @@
 #ifndef __SERVO_MOTOR_H__
-#define __SERVO_MOTOR_H__
-
 #include <wiringPi.h>
+#define __SERVO_MOTOR_H__
 
 #define MOTOR_PIN 12
 

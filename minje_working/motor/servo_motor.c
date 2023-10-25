@@ -1,4 +1,5 @@
 #include "servo_motor.h"
+#include<stdio.h>
 
 void init_motor()
 {
@@ -9,6 +10,7 @@ void init_motor()
 void setServo(){
     pwmSetClock ( 400 ); 
     pwmSetRange ( 1024 );
+    
 }
 
 void angle(int status, int value)
@@ -19,6 +21,7 @@ void angle(int status, int value)
     {
         for(int i=status;i<=value;i++)
         {
+            printf("%d\n", i);
             pwmWrite (MOTOR_PIN,  i); 
             delay(10);
         }
