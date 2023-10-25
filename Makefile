@@ -26,7 +26,7 @@ buzzer.o: buzzer.c
 	$(CC) $(CFLAGS) -o $(CURDIR)/minje_working/warning/3colorLed.o -c $(CURDIR)/minje_working/warning/3colorLed.c
 
 sensor.o: sensor.c
-	$(CC) $(CFLAGS) -o sensor.o -c sensor.c $(LDLIBS)
+	$(CC) $(CFLAGS) -o sensor.o -c sensor.c
 
 main.o: main.c
 	$(CC) $(CFLAGS) -o main.o -c main.c

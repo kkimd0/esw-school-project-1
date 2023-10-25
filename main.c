@@ -4,6 +4,15 @@
 #include "minje_working/warning/buzzer.h"
 #include "sensor.h"
 
+#define MODULE_TEST			1
+/* == if MODULE_TEST is 0, disable the test below == */
+#define STEP_MOTOR_TEST 	1
+#define SERVO_MOTOR_TEST 	1
+#define LED_TEST 			1
+#define BUZZER_TEST 		1
+#define SENSOR_READ_TEST 	1
+/* ================================================= */
+
 void init()
 {
 	wiringPiSetupGpio();
@@ -16,8 +25,7 @@ void init()
 
 void module_test()
 {
-	uint8_t cnt = 0;
-	if ( 1 )
+	if ( STEP_MOTOR_TEST )
 	{
 		printf("step_motor test start\n");
 		printf("step_motor one_cycle_rotation start\n");
@@ -34,10 +42,9 @@ void module_test()
 		printf("step_motor test complete\n");
 		
 		sleep(1);
-		cnt++;
 	}
 	
-	if ( 1 )
+	if ( SERVO_MOTOR_TEST )
 	{
 		printf("servo_motor test start\n");
 		angle(0, 180);
@@ -47,33 +54,30 @@ void module_test()
 		printf("servo_motor test complete\n");
 		
 		sleep(1);
-		cnt++;
 	}
 	
-	if ( 1 )
+	if ( LED_TEST )
 	{
 		printf("3LED turn green\n");
     		turnGreen();
 		printf("3LED turn green complete\n");
 		
-    		sleep(1);
-		cnt++;
+    	sleep(1);
 	}
 	
-	if ( 1 )
+	if ( BUZZER_TEST )
 	{
 		printf("buzzer test start\n");
 		for(int8_t i=0; i<5; i++)
 		{
-			warningSound();
+			frontWarningSound();
 		}
 		printf("buzzer test complete\n");
 		
 		sleep(1);
-		cnt++;
 	}
 	
-	if ( 1 )
+	if ( SENSOR_READ_TEST )
 	{
 		printf("sensor reading test start\n");
 		for (int8_t i=0; i<5; i++)
@@ -88,17 +92,9 @@ void module_test()
 		printf("sensor reading test complete\n");
 		
 		sleep(1);
-		cnt++;
 	}
-	
-	if ( !cnt )
-	{
-		printf("no module test\n");
-	}
-	else
-	{
-		printf("All test complete\n");
-	}
+
+	printf("All test complete\n");
 }
 
 int8_t mainloop()
@@ -110,7 +106,10 @@ int main()
 {
 	init();
 	printf("init complete\n");
-	module_test();
+	if ( MODULE_TEST )
+	{
+		module_test();
+	}
 
 	int8_t er;
 	while ( 0 )

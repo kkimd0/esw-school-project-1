@@ -13,10 +13,8 @@
 #define MICROSECOND 1000000
 
 void init_buzzer();
-void setNote();
+void setNote(int note);
 void frontWarningSound();
 void sideLaneWarningSound();
-void setWarningSound();
-void warningSound();
 
 #endif
