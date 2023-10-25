@@ -11,7 +11,7 @@ OBJECTS = main.o $(CURDIR)/step_motor/step_motor.o $(CURDIR)/minje_working/motor
 	  sensor.o
 
 $(TARGET): $(OBJECTS)
-	$(CC) $(CFLAGS) $^ $(LDLIBS) -o $@
+	sudo $(CC) $(CFLAGS) $^ $(LDLIBS) -o $@
 
 step_motor.o: step_motor.c
 	$(CC) $(CFLAGS) -o $(CURDIR)/step_motor/step_motor.o -c $(CURDIR)/step_motor/step_motor.c

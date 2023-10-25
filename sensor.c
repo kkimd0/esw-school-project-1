@@ -26,14 +26,14 @@ void init_sensor()
  
 void read_sensor()
 {
-	int8_t buffer[256];
-	int32_t index_buf = 0;
-	int8_t testletter = 'q';
+	static int8_t buffer[256];
+	static int8_t index_buf = 0;
+	static int8_t testletter = 'q';
 	
 	if(serialDataAvail(fd)) 
 	{
 		int8_t c = serialGetchar(fd);
-		int32_t flag = strcmp(&c, &testletter);
+		int16_t flag = strcmp(&c, &testletter);
 
 		if(flag < 0) 
 		{
@@ -74,6 +74,8 @@ void read_sensor()
 			{
 				joyValue = value;
 			}
+			
+			printf("%s, %d\n", sensor, value);
 
 			index_buf = 0;
 			memset(buffer, 0, sizeof(buffer)); // buffer
