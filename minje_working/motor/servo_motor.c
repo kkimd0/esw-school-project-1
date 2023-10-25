@@ -7,32 +7,33 @@ void init_motor()
     pwmSetMode ( PWM_MODE_MS ); 
 }
 
-void setServo(){
-    pwmSetClock ( 400 ); 
-    pwmSetRange ( 1024 );
-    
+void setServo()
+{
+    pwmSetClock ( 384 ); 
+    pwmSetRange ( 1000 );
 }
 
-void angle(int status, int value)
+void setAngleFast(int angle)
+{
+    setServo();
+    pwmWrite(MOTOR_PIN, 20 + angle * MOTOR_PULSE);
+}
+
+void setAngleSlow(int start, int end)
 {
     setServo();
 
-    if(status < value)
-    {
-        for(int i=status;i<=value;i++)
-        {
-            printf("%d\n", i);
-            pwmWrite (MOTOR_PIN,  i); 
-            delay(10);
+    if(start <= end){
+        for(int i = start * MOTOR_PULSE; i <= end * MOTOR_PULSE; i++){
+            pwmWrite(MOTOR_PIN, i + 20);
+            delay(30);
         }
     }
     else
     {
-        for(int i=status;i>=value;i--)
-        {
-            pwmWrite (MOTOR_PIN,  i); 
-            delay(10);
+        for(int i = start * MOTOR_PULSE; i >= end * MOTOR_PULSE; i--){
+            pwmWrite(MOTOR_PIN, i + 20);
+            delay(30);
         }
     }
-
 }

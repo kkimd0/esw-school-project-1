@@ -3,21 +3,18 @@
 
 int main(){
 
-
-
     wiringPiSetupGpio();
     init_motor();
-    setServo();
+
+    setAngleFast(180);
 
     while(1){
-        // pwmWrite(MOTOR_PIN, 180 );
-        // delay(1000);
+        // setAngleFast(180);
+        // delay(500);
+        // setAngleFast(0);
+        // delay(500);
 
-        // pwmWrite(MOTOR_PIN, 0 );
-        // delay(1000);
-
-        angle(20, 30);
-        angle(30, 20);
-
+        setAngleSlow(180, 0);
+        setAngleSlow(0, 180);
     }
 }
