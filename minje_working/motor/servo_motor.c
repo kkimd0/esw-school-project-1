@@ -13,13 +13,15 @@ void setServo()
     pwmSetRange ( 1000 );
 }
 
-void setAngleFast(int angle)
+int setAngleFast(int angle)
 {
     setServo();
     pwmWrite(MOTOR_PIN, 20 + angle * MOTOR_PULSE);
+
+    return angle;
 }
 
-void setAngleSlow(int start, int end)
+int setAngleSlow(int start, int end)
 {
     setServo();
 
@@ -36,26 +38,26 @@ void setAngleSlow(int start, int end)
             delay(20);
         }
     }
+
+    return end;
 }
 
-void IR_Window_Up(int* currangle)
+int IR_Window_Up(int currentAngle)
 {
     setServo();
-    if((*currangle) >= 180)
-    {
-        return;
-    }
-    (*currangle) = (*currangle) + 2;
-    pwmWrite(MOTOR_PIN, 20 + (*currangle) * MOTOR_PULSE);
+
+    int nextAngle = currentAngle + 2;
+    pwmWrite(MOTOR_PIN, 20 + nextAngle * MOTOR_PULSE);
+
+    return nextAngle;
 }
 
-void IR_Window_Down(int* currangle)
+void IR_Window_Down(int currentAngle)
 {
     setServo();
-    if((*currangle) <= 0)
-    {
-        return;
-    }
-    (*currangle) = (*currangle) - 2;
-    pwmWrite(MOTOR_PIN, 20 + (*currangle) * MOTOR_PULSE);
+
+    int nextAngle = currentAngle - 2;
+    pwmWrite(MOTOR_PIN, 20 + nextAngle * MOTOR_PULSE);
+
+    return nextAngle;
 }
