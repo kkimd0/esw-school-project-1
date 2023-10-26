@@ -28,7 +28,7 @@
 extern uint32_t upDistance;
 extern uint32_t frontDistance;
 extern uint32_t luxValue;
-extern uint32_t infraedValue;
+extern uint32_t infraredValue;
 extern uint32_t joyValue;
 
 // init sensor setting
