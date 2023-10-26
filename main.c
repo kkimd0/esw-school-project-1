@@ -26,7 +26,7 @@
 #define LCD_TEST 		0
 /* ================================================= */
 
-#define FRONT_DISTANCE_THRESHOLD 10
+#define FRONT_DISTANCE_THRESHOLD 5
 #define UP_DISTANCE_THRESHOLD 100
 #define LEFT_JOY_THRESHOLD 250
 #define RIGHT_JOY_THRESHOLD 750
@@ -58,11 +58,12 @@ void init()
 
 int8_t mainloop()
 {
-	static pthread_t pthread[3];
+	static pthread_t pthread[5];
 	static int16_t thr_id;
 	static enum CarState carState_buf;
 	static enum CarState carState_save;
 	static int8_t camera_flag = 0;
+	static int8_t air_control_dir = 1; // 0: close, 1: open
 	
 	read_sensor();
 	/* 
@@ -72,6 +73,10 @@ int8_t mainloop()
 	 * infraredValue	: infrared sensors (remote control)
 	 * joyValue 		: joystick sensor
 	 */
+	
+	// time for log
+	tnow = time(NULL);
+	tm = *localtime(&tnow);
 	
 	// Front Warning Case
 	if ( (frontDistance < FRONT_DISTANCE_THRESHOLD) )
@@ -98,8 +103,6 @@ int8_t mainloop()
 	(LEFT_JOY_THRESHOLD < joyValue && joyValue < RIGHT_JOY_THRESHOLD)) )
 	{
 		carState = carState_save;
-		tnow = time(NULL);
-		tm = *localtime(&tnow);
 		
 		usePrint_LCD(carState);
 		printf("[%02d:%02d:%02d] Warning OFF\n", tm.tm_hour, tm.tm_min, tm.tm_sec, frontDistance);
@@ -140,8 +143,6 @@ int8_t mainloop()
 	if ( !buzzer_flag && carState == FRONT_WARNING )
 	{
 		buzzer_flag = 1;
-		tnow = time(NULL);
-		tm = *localtime(&tnow);
 		
 		usePrint_LCD(carState);
 		printf("[%02d:%02d:%02d] Front(%04d) Warning!!\n", tm.tm_hour, tm.tm_min, tm.tm_sec, frontDistance);
@@ -157,13 +158,11 @@ int8_t mainloop()
 	else if ( !buzzer_flag && carState == SIDE_WARNING )
 	{
 		buzzer_flag = 1;
-		tnow = time(NULL);
-		tm = *localtime(&tnow);
 		
 		usePrint_LCD(carState);
 		printf("[%02d:%02d:%02d] Side(%04d) Warning!!\n", tm.tm_hour, tm.tm_min, tm.tm_sec, joyValue);
 		
-		// side buzzer thread
+		/* side buzzer thread */
 		thr_id = pthread_create(&pthread[0], NULL, sideLaneWarningSound, NULL);
         if(thr_id < 0)
 		{
@@ -176,21 +175,32 @@ int8_t mainloop()
 		carState_buf = carState;
 		usePrint_LCD(carState);
 		
-		tnow = time(NULL);
-		tm = *localtime(&tnow);
-		
 		printf("[%02d:%02d:%02d] AutoMode Tunnel IN(Lux: %04d, Up: %04d)\n", tm.tm_hour, tm.tm_min, tm.tm_sec, luxValue, upDistance);
 		
 		/* window control thread */
+		servo_motor_flag = 1;
+		thr_id = pthread_create(&pthread[1], NULL, thread_window_up, NULL);
+		if(thr_id < 0)
+		{
+			perror("pthread[1] create error\n");
+			exit(EXIT_FAILURE);
+		}
+		
 		/* air control thread */
+		step_motor_flag = 1;
+		air_control_dir = 0;
+		thr_id = pthread_create(&pthread[2], NULL, close_rotation, NULL);
+		if(thr_id < 0)
+		{
+			perror("pthread[2] create error\n");
+			exit(EXIT_FAILURE);
+		}
+		
 	}
 	else if ( carState_buf != carState && carState == MANUAL_IN )
 	{
 		carState_buf = carState;
 		usePrint_LCD(carState);
-		
-		tnow = time(NULL);
-		tm = *localtime(&tnow);
 		
 		printf("[%02d:%02d:%02d] ManualMode Tunnel IN(Lux: %04d, Up: %04d)\n", tm.tm_hour, tm.tm_min, tm.tm_sec, luxValue, upDistance);
 	}
@@ -199,40 +209,44 @@ int8_t mainloop()
 		carState_buf = carState;
 		usePrint_LCD(carState);
 		
-		tnow = time(NULL);
-		tm = *localtime(&tnow);
-		
 		printf("[%02d:%02d:%02d] AutoMode Tunnel OUT(Lux: %04d, Up: %04d)\n", tm.tm_hour, tm.tm_min, tm.tm_sec, luxValue, upDistance);
 		
-		thr_id = pthread_create(&pthread[1], NULL, sideLaneWarningSound, NULL);
+		/* window control thread */
+		servo_motor_flag = 1;
+		thr_id = pthread_create(&pthread[1], NULL, thread_window_origin, NULL);
 		if(thr_id < 0)
 		{
 			perror("pthread[1] create error\n");
 			exit(EXIT_FAILURE);
 		}
 		
-		/* window control thread */
 		/* air control thread */
+		step_motor_flag = 1;
+		air_control_dir = 1;
+		thr_id = pthread_create(&pthread[2], NULL, open_rotation, NULL);
+		if(thr_id < 0)
+		{
+			perror("pthread[2] create error\n");
+			exit(EXIT_FAILURE);
+		}
+		
 	}
 	else if ( carState_buf != carState && carState == MANUAL_OUT)
 	{
 		carState_buf = carState;
 		usePrint_LCD(carState);
 		
-		tnow = time(NULL);
-		tm = *localtime(&tnow);
-		
 		printf("[%02d:%02d:%02d] ManualMode Tunnel OUT(Lux: %04d, Up: %04d)\n", tm.tm_hour, tm.tm_min, tm.tm_sec, luxValue, upDistance);
 	}
 	
 	/* Camera Deactivate */
-	if ( camera_flag && (carState == MANUAL_OUT || carState == AUTO_OUT) )
+	if ( camera_flag && !isTunnelIn )
 	{
 		camera_flag = 0;
 		system("camera/kill_stream.sh");
 	}
 	/* Camera Activate */
-	else if ( !camera_flag && (carState == MANUAL_IN || carState == AUTO_IN) )
+	else if ( !camera_flag && isTunnelIn )
 	{
 		camera_flag = 1;
 		system("python3 camera/stream.py &");
@@ -244,20 +258,119 @@ int8_t mainloop()
 	 * 		air control
 	 */
 	
-	if ( infraredValue == 10 )
+	/* window up */
+	if ( !infrared_flag && infraredValue == 10 )
 	{
-		printf("[%02d:%02d:%02d] window up(%02d)\n", tm.tm_hour, tm.tm_min, tm.tm_sec, infraredValue);
+		infrared_flag = 1;
+		
+		if ( servo_motor_flag )
+		{
+			servo_motor_flag = 0;
+			printf("[%02d:%02d:%02d] window up stop\n", tm.tm_hour, tm.tm_min, tm.tm_sec);
+		}
+		else
+		{
+			servo_motor_flag = 1;
+			
+			thr_id = pthread_create(&pthread[1], NULL, thread_window_up, NULL);
+			if(thr_id < 0)
+			{
+				perror("pthread[1] create error\n");
+				exit(EXIT_FAILURE);
+			}
+			printf("[%02d:%02d:%02d] window up\n", tm.tm_hour, tm.tm_min, tm.tm_sec);
+		}
+		
+		
+		thr_id = pthread_create(&pthread[4], NULL, infrared_contorl, NULL);
+		if(thr_id < 0)
+		{
+			perror("pthread[4] create error\n");
+			exit(EXIT_FAILURE);
+		}
+		
 	}
-	else if ( infraredValue == 20 )
+	/* window down */
+	else if ( !infrared_flag && infraredValue == 20 )
 	{
-		printf("[%02d:%02d:%02d] window down(%02d)\n", tm.tm_hour, tm.tm_min, tm.tm_sec, infraredValue);
+		infrared_flag = 1;
+		
+		if ( servo_motor_flag )
+		{
+			servo_motor_flag = 0;
+			printf("[%02d:%02d:%02d] window down stop\n", tm.tm_hour, tm.tm_min, tm.tm_sec);
+		}
+		else
+		{
+			servo_motor_flag = 1;
+			
+			thr_id = pthread_create(&pthread[1], NULL, thread_window_down, NULL);
+			if(thr_id < 0)
+			{
+				perror("pthread[1] create error\n");
+				exit(EXIT_FAILURE);
+			}
+			printf("[%02d:%02d:%02d] window down\n", tm.tm_hour, tm.tm_min, tm.tm_sec);
+		}
+		
+		
+		thr_id = pthread_create(&pthread[4], NULL, infrared_contorl, NULL);
+		if(thr_id < 0)
+		{
+			perror("pthread[4] create error\n");
+			exit(EXIT_FAILURE);
+		}
 	}
-	else if ( infraredValue == 30 )
+	/* air control */
+	else if ( !infrared_flag && infraredValue == 30 )
 	{
-		printf("[%02d:%02d:%02d] air control(%02d)\n", tm.tm_hour, tm.tm_min, tm.tm_sec, infraredValue);
+		infrared_flag = 1;
+		
+		if ( step_motor_flag )
+		{
+			step_motor_flag = 0;
+			usleep( 100000 );
+		}
+		
+		step_motor_flag = 1;
+		if ( !air_control_dir )
+		{
+			air_control_dir = 1;
+			thr_id = pthread_create(&pthread[2], NULL, open_rotation, NULL);
+			if(thr_id < 0)
+			{
+				perror("pthread[2] create error\n");
+				exit(EXIT_FAILURE);
+			}
+			printf("[%02d:%02d:%02d] air control open\n", tm.tm_hour, tm.tm_min, tm.tm_sec);
+		}
+		else
+		{
+			air_control_dir = 0;
+			thr_id = pthread_create(&pthread[2], NULL, close_rotation, NULL);
+			if(thr_id < 0)
+			{
+				perror("pthread[2] create error\n");
+				exit(EXIT_FAILURE);
+			}
+			printf("[%02d:%02d:%02d] air control close\n", tm.tm_hour, tm.tm_min, tm.tm_sec);
+		}
+		
+		thr_id = pthread_create(&pthread[4], NULL, infrared_contorl, NULL);
+		if(thr_id < 0)
+		{
+			perror("pthread[4] create error\n");
+			exit(EXIT_FAILURE);
+		}
+		
 	}
 	
 	return 0;
+}
+
+void switch_toggle_callback()
+{
+	manual_mode = !manual_mode;
 }
 
 int main()
@@ -267,6 +380,12 @@ int main()
 	if ( MODULE_TEST )
 	{
 		module_test();
+	}
+	
+	
+	if( wiringPiISR(GPIO_MANUAL, INT_EDGE_RISING, &switch_toggle_callback) < 0 )
+	{
+		printf("%s\n", "Interrupt setup Fail");
 	}
 	
 	int8_t er;
@@ -341,7 +460,7 @@ void module_test()
 			printf("UP: %d\n", upDistance);
 			printf("FRONT: %d\n", frontDistance);
 			printf("LUX: %d\n", luxValue);
-			printf("INFRAED: %d\n", infraredValue);
+			printf("INFRARED: %d\n", infraredValue);
 			printf("JOY_Z: %d\n", joyValue);
 			usleep(1000);
 		}

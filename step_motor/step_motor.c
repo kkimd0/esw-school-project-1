@@ -54,6 +54,30 @@ void one_cycle_reverse_rotation()
 	}
 }
 
+void *close_rotation()
+{
+	while ( step_motor_flag && 0 < cnt)
+	{
+		one_step_reverse_rotation();
+		cnt--;
+	}
+	
+	step_motor_flag = 0;
+	return;
+}
+
+void *open_rotation()
+{
+	while ( step_motor_flag && 255 > cnt)
+	{
+		one_step_rotation();
+		cnt++;
+	}
+	
+	step_motor_flag = 0;
+	return;
+}
+
 void set_motor_speed(uint32_t motor_delay)
 {
 	motorDelay = motor_delay;

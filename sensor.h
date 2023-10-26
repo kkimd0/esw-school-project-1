@@ -23,6 +23,7 @@
 
 #define SERIALBAUD 9600
 #define DEVICE "/dev/ttyACM0"
+#define GPIO_MANUAL 15
 
 // Find Serial device on Raspberry with ~ls /dev/tty*
 // ARDUINO_UNO "/dev/ttyACM0"
@@ -53,6 +54,7 @@ extern enum CarState carState;
 extern int8_t servo_motor_flag;
 extern int8_t step_motor_flag;
 extern int8_t buzzer_flag;
+extern int8_t infrared_flag;
 
 
 // init sensor setting
@@ -60,5 +62,6 @@ void init_sensor();
 
 // read all sensor value
 void read_sensor();
+void *infrared_contorl();
 
 #endif

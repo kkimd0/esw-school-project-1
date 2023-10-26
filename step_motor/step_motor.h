@@ -9,12 +9,14 @@
 #include <unistd.h>
 #include <wiringPi.h>
 #include <stdint.h>
+#include "../sensor.h"
 
 #define IN1 23
 #define IN2 24
 #define IN3 25
 #define IN4 8
 static uint32_t motorDelay;
+static uint16_t cnt;
 
 // motor setting function
 void init_step_motor();
@@ -35,6 +37,9 @@ void one_step_reverse_rotation();
 
 // 1 cycle backward rotation
 void one_cycle_reverse_rotation();
+
+void *close_rotation();
+void *open_rotation();
 
 // set step delay
 // higher motor delay, slower

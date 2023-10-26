@@ -1,7 +1,5 @@
 #include "buzzer.h"
 
-int8_t buzzer_flag;
-
 void init_buzzer()
 {
     
@@ -34,6 +32,8 @@ void *frontWarningSound()
     offRed();
     delay(500);
 	buzzer_flag = 0;
+	
+	return;
 }
 
 void *sideLaneWarningSound()
@@ -45,4 +45,6 @@ void *sideLaneWarningSound()
     }
     offRed();
 	buzzer_flag = 0;
+	
+	return;
 }

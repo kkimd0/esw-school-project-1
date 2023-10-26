@@ -6,6 +6,12 @@ uint32_t frontDistance = 0;
 uint32_t luxValue = 0;
 uint32_t infraredValue = 0;
 uint32_t joyValue = 0;
+
+int8_t servo_motor_flag;
+int8_t step_motor_flag;
+int8_t buzzer_flag;
+int8_t infrared_flag;
+
 enum CarState carState;
 
 void init_sensor()
@@ -80,4 +86,10 @@ void read_sensor()
 			memset(buffer, 0, sizeof(buffer)); // buffer
 		}
 	}
+}
+
+void *infrared_contorl()
+{
+	usleep(500000);
+	infrared_flag = 0;
 }
