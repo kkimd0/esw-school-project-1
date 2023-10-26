@@ -4,7 +4,7 @@ static uint32_t fd;
 uint32_t upDistance = 0;
 uint32_t frontDistance = 0;
 uint32_t luxValue = 0;
-uint32_t infraedValue = 0;
+uint32_t infraredValue = 0;
 uint32_t joyValue = 0;
 
 void init_sensor()
@@ -68,7 +68,7 @@ void read_sensor()
 			}
 			else if(strcmp(sensor, "INFRAED") == 0)
 			{
-				infraedValue = value;
+				infraredValue = value;
 			}
 			else if(strcmp(sensor, "JOY") == 0) 
 			{
