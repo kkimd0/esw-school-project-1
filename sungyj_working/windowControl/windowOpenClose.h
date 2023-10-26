@@ -10,4 +10,7 @@ void init_motor();
 void setServo();
 void setAngleFast(int angle);
 void setAngleSlow(int start, int end);
+
+void WindowControl_with_tunnelState();
+void setAngleFast_Start_End(int angle_increase);
 #endif

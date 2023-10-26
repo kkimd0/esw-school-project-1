@@ -1,4 +1,5 @@
 #include "windowOpenClose.h"
+int angle_current = 0;
 
 void init_motor()
 {
@@ -16,6 +17,14 @@ void setAngleFast(int angle)
 {
     setServo();
     pwmWrite(MOTOR_PIN, 20 + angle * MOTOR_PULSE);
+    angle_current = angle;
+}
+
+void setAngleFast_Start_End(int angle_increase)
+{
+    setServo();
+    pwmWrite(MOTOR_PIN, 20 + (angle_current + angle_increase) * MOTOR_PULSE);
+    angle_current = angle_current + angle_increase;
 }
 
 void setAngleSlow(int start, int end)
@@ -35,18 +44,40 @@ void setAngleSlow(int start, int end)
             delay(20);
         }
     }
+
+    angle_current = end;
+}
+
+void WindowControl_with_tunnelState(){
+    /* 터널 내/외부인지에 따라 창문을 열고 닫음 */
+    int16_t flag_tunnel_in_out = determine_tunnel_in_out();
+    if (flag_tunnel_in_out == 1) {          // In the tunnel. Close Window
+        setAngleFast(5);
+    }
+    else if (flag_tunnel_in_out == 2) {     // Outside the tunnel. Open window
+        setAngleFast(180);
+    }
 }
 
 int main() {
     wiringPiSetupGpio();
     init_motor();
 
-    int16_t flag_tunnel_in_out = determine_tunnel_in_out();
-    if (flag_tunnel_in_out == 1) {
-        setAngleFast(180);
+    /* 터널 내/외부인지에 따라 창문을 열고 닫음 */
+    WindowControl_with_tunnelState();
+
+
+    delay(1000);
+    /* 현재 각도에서 원하는 각도만큼 더 움직이는 함수: setAngleFast_Start_End() */
+    /* 0도로 이동한 후, 10도씩 점진적으로 열고 닫히게 하는 예제 */
+    angle_current = 0;
+    for(int i=0; i<17; i++){
+        setAngleFast_Start_End(10);
+        delay(300);
     }
-    else if (flag_tunnel_in_out == 2) {
-        setAngleFast(0);
+    for(int i=0; i<17; i++){
+        setAngleFast_Start_End(-10);
+        delay(300);
     }
 
     return 0;
