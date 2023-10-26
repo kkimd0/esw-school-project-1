@@ -2,17 +2,17 @@
   [상태 출력 LCD 모듈]
   void usePrint_LCD()의 인자에 따라 LCD 출력 선택 (500 ms 주기)
 
-  -1 이면, "Warning!!", "Warning!!" 출력
-  0 이면, "In Tunnel", "Auto mode" 출력
-  1 이면, "In Tunnel", "Manual mode" 출력
-  2 이면, "OutSide Tunnel", "Manual mode" 출력
-  3 이면, "OutSide Tunnel", "Auto mode" 출력
+  0 이면, "Warning!!", "Warning!!" 출력
+  1 이면, "In Tunnel", "Auto mode" 출력
+  2 이면, "In Tunnel", "Manual mode" 출력
+  3 이면, "OutSide Tunnel", "Manual mode" 출력
+  4 이면, "OutSide Tunnel", "Auto mode" 출력
 */
 
 #include "LCD.h"
 
 static int32_t fd;
-// enum CarState carState;
+
 void lcd_byte(int32_t bits, int32_t mode)   {
 
   //Send byte to data pins
@@ -34,16 +34,17 @@ void lcd_byte(int32_t bits, int32_t mode)   {
 }
 
 void lcd_toggle_enable(int32_t bits)   {
-  // Toggle enable pin on LCD display
-  delayMicroseconds(100);
-  wiringPiI2CReadReg8(fd, (bits | ENABLE));
-  delayMicroseconds(100);
-  wiringPiI2CReadReg8(fd, (bits & ~ENABLE));
-  delayMicroseconds(100);
+	// Toggle enable pin on LCD display
+	delayMicroseconds(100);
+	wiringPiI2CReadReg8(fd, (bits | ENABLE));
+	delayMicroseconds(100);
+	wiringPiI2CReadReg8(fd, (bits & ~ENABLE));
+	delayMicroseconds(100);
 }
 
-void init_LCD()   {
-	wiringPiI2CSetup(I2C_ADDR);
+void init_LCD()  
+{
+	fd = wiringPiI2CSetup(I2C_ADDR);
 	// Initialise display
 	lcd_byte(0x33, LCD_CMD); // Initialise
 	lcd_byte(0x32, LCD_CMD); // Initialise
@@ -79,24 +80,26 @@ void printLCD(const char *s_Line1, const char *s_Line2)  {
 }
 
 void usePrint_LCD(uint32_t selectString) {
-  switch (selectString) {
-    case 0 :
-      printLCD("Warning!!", "Warning!!");
-	  // usePrint_LCD(carState);
-      break;
-    case 1 :
-      printLCD("In Tunnel", "Auto mode");
-      break;
-    case 2 :
-      printLCD("In Tunnel", "Manual mode");
-      break;
-    case 3 :
-      printLCD("OutSide Tunnel", "Manual mode");
-      break;
-    case 4 :
-      printLCD("OutSide Tunnel", "Auto mode");
-      break;
-    default :
-      break;
-  }
+	switch (selectString) {
+	case 0 :
+		printLCD("!! Warning !!", "Front Warning");
+		break;
+	case 1 :
+		printLCD("!! Warning !!", "Side Warning");
+		break;
+	case 2 :
+		printLCD("In Tunnel", "Auto mode");
+		break;
+	case 3 :
+		printLCD("In Tunnel", "Manual mode");
+		break;
+	case 4 :
+		printLCD("OutSide Tunnel", "Manual mode");
+		break;
+	case 5 :
+		printLCD("OutSide Tunnel", "Auto mode");
+		break;
+	default :
+		break;
+	}
 }

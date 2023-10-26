@@ -1,15 +1,7 @@
 #ifndef __LCD_H__
 #define __LCD_H__
 
-#include <wiringPiI2C.h>
-#include <wiringPi.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdint.h>
 #include "../sensor.h"
-
-// Define some device parameters
-#define I2C_ADDR   0x27 // I2C device address
 
 // Define some device constants
 #define LCD_CHR  1 // Mode - Sending data
@@ -22,6 +14,8 @@
 // LCD_BACKLIGHT = 0x00  # Off
 
 #define ENABLE  0b00000100 // Enable bit
+// Define some device parameters
+#define I2C_ADDR   0x27 // I2C device address
 
 void init_LCD(void);
 void lcd_byte(int32_t bits, int32_t mode);

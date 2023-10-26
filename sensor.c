@@ -6,6 +6,7 @@ uint32_t frontDistance = 0;
 uint32_t luxValue = 0;
 uint32_t infraredValue = 0;
 uint32_t joyValue = 0;
+enum CarState carState;
 
 void init_sensor()
 {

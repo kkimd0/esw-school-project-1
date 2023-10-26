@@ -7,6 +7,8 @@
 #ifndef __SENSOR_H__
 #define __SENSOR_H__
 //include system librarys
+#include <wiringPiI2C.h>
+#include <wiringPi.h>
 #include <stdio.h> //for printf
 #include <stdint.h> //uint8_t definitions
 #include <stdlib.h> //for exit(int);
@@ -28,6 +30,17 @@
 // HARDWARE_UART "/dev/ttyAMA0"
 // filedescriptor
 
+// Car State Enum
+enum CarState 
+{
+	FRONT_WARNING,
+	SIDE_WARNING,
+	AUTO_IN,
+	MANUAL_IN,
+	MANUAL_OUT,
+	AUTO_OUT
+};
+
 // common value
 extern uint32_t upDistance;
 extern uint32_t frontDistance;
@@ -41,15 +54,6 @@ extern int8_t servo_motor_flag;
 extern int8_t step_motor_flag;
 extern int8_t buzzer_flag;
 
-// Car State Enum
-enum CarState 
-{
-	WARNING,
-	AUTO_IN,
-	MANUAL_IN,
-	MANUAL_OUT,
-	AUTO_OUT
-};
 
 // init sensor setting
 void init_sensor();
