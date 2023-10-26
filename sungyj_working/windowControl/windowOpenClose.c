@@ -1,3 +1,16 @@
+/* 
+    [창문 서보모터 설정값]
+        열린 상태 : 180
+        닫힌 상태 : 5
+
+    [추가 함수 종류]
+        - void WindowControl_with_tunnelState()
+            :   터널 안이면 창문 열거나 닫음.
+        - void setAngleFast_Start_End(int angle_increase)
+            :   현재 각도에서 원하는 각도만큼 이동함. 
+                부호에 따라 방향 결정. 양수이면 반시계방향 회전, 음수이면 시계방향 회전
+*/
+
 #include "windowOpenClose.h"
 int angle_current = 0;
 
