@@ -1,8 +1,12 @@
+#ifndef __LCD_H__
+#define __LCD_H__
+
 #include <wiringPiI2C.h>
 #include <wiringPi.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
+#include "../sensor.h"
 
 // Define some device parameters
 #define I2C_ADDR   0x27 // I2C device address
@@ -19,7 +23,7 @@
 
 #define ENABLE  0b00000100 // Enable bit
 
-void lcd_init(void);
+void init_LCD(void);
 void lcd_byte(int32_t bits, int32_t mode);
 void lcd_toggle_enable(int32_t bits);
 
@@ -27,7 +31,8 @@ void lcd_toggle_enable(int32_t bits);
 void lcdLoc(int32_t line); //move cursor
 void ClrLcd(void); // clr LCD return home
 void typeln(const char *s);
-int32_t fd;  // seen by all subroutines
 
 void printLCD(const char *s_Line1, const char *s_Line2);
-void usePrint_LCD(int32_t selectString);
+void usePrint_LCD(uint32_t selectString);
+
+#endif

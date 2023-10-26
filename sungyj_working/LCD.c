@@ -11,27 +11,8 @@
 
 #include "LCD.h"
 
-int main()   {
-
-  if (wiringPiSetup () == -1) exit (1);
-
-  fd = wiringPiI2CSetup(I2C_ADDR);
-
-  lcd_init(); // setup LCD
-  
-  while (1)   {
-    usePrint_LCD(-1);
-    usePrint_LCD(0);
-    usePrint_LCD(1);
-    usePrint_LCD(2);
-    usePrint_LCD(3);
-  }
-
-  return 0;
-}
-
-
-
+static int32_t fd;
+enum CarState carState;
 void lcd_byte(int32_t bits, int32_t mode)   {
 
   //Send byte to data pins
@@ -54,22 +35,22 @@ void lcd_byte(int32_t bits, int32_t mode)   {
 
 void lcd_toggle_enable(int32_t bits)   {
   // Toggle enable pin on LCD display
-  delayMicroseconds(500);
+  delayMicroseconds(100);
   wiringPiI2CReadReg8(fd, (bits | ENABLE));
-  delayMicroseconds(500);
+  delayMicroseconds(100);
   wiringPiI2CReadReg8(fd, (bits & ~ENABLE));
-  delayMicroseconds(500);
+  delayMicroseconds(100);
 }
 
-void lcd_init()   {
-  // Initialise display
-  lcd_byte(0x33, LCD_CMD); // Initialise
-  lcd_byte(0x32, LCD_CMD); // Initialise
-  lcd_byte(0x06, LCD_CMD); // Cursor move direction
-  lcd_byte(0x0C, LCD_CMD); // 0x0F On, Blink Off
-  lcd_byte(0x28, LCD_CMD); // Data length, number of lines, font size
-  lcd_byte(0x01, LCD_CMD); // Clear display
-  delayMicroseconds(500);
+void init_LCD()   {
+	wiringPiI2CSetup(I2C_ADDR);
+	// Initialise display
+	lcd_byte(0x33, LCD_CMD); // Initialise
+	lcd_byte(0x32, LCD_CMD); // Initialise
+	lcd_byte(0x06, LCD_CMD); // Cursor move direction
+	lcd_byte(0x0C, LCD_CMD); // 0x0F On, Blink Off
+	lcd_byte(0x28, LCD_CMD); // Data length, number of lines, font size
+	lcd_byte(0x01, LCD_CMD); // Clear display
 }
 
 // clr lcd go home loc 0x80
@@ -95,24 +76,24 @@ void printLCD(const char *s_Line1, const char *s_Line2)  {
     typeln(s_Line1);
     lcdLoc(LINE2);
     typeln(s_Line2);
-    delay(500);
 }
 
-void usePrint_LCD(int32_t selectString) {
+void usePrint_LCD(uint32_t selectString) {
   switch (selectString) {
-    case -1 :
-      printLCD("Warning!!", "Warning!!");
-      break;
     case 0 :
-      printLCD("In Tunnel", "Auto mode");
+      printLCD("Warning!!", "Warning!!");
+	  usePrint_LCD(carState);
       break;
     case 1 :
-      printLCD("In Tunnel", "Manual mode");
+      printLCD("In Tunnel", "Auto mode");
       break;
     case 2 :
-      printLCD("OutSide Tunnel", "Manual mode");
+      printLCD("In Tunnel", "Manual mode");
       break;
     case 3 :
+      printLCD("OutSide Tunnel", "Manual mode");
+      break;
+    case 4 :
       printLCD("OutSide Tunnel", "Auto mode");
       break;
     default :

@@ -3,6 +3,7 @@
 
 #include <wiringPi.h>
 #include "3colorLed.h"
+#include "../../sensor.h"
 
 #define RAS_CLOCK 19
 #define BUZZER_PIN 13
@@ -14,7 +15,7 @@
 
 void init_buzzer();
 void setNote(int note);
-void frontWarningSound();
-void sideLaneWarningSound();
+void *frontWarningSound();
+void *sideLaneWarningSound();
 
 #endif

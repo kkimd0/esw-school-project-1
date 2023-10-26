@@ -41,21 +41,21 @@ void setAngleSlow(int start, int end)
 void IR_Window_Up(int* currangle)
 {
     setServo();
-    if(currangle >= 180)
+    if((*currangle) >= 180)
     {
         return;
     }
-    currangle = currangle + 2;
-    pwmWrite(MOTOR_PIN, 20 + currangle * MOTOR_PULSE);
+    (*currangle) = (*currangle) + 2;
+    pwmWrite(MOTOR_PIN, 20 + (*currangle) * MOTOR_PULSE);
 }
 
 void IR_Window_Down(int* currangle)
 {
     setServo();
-    if(currangle <= 0)
+    if((*currangle) <= 0)
     {
         return;
     }
-    currangle = currangle - 2;
-    pwmWrite(MOTOR_PIN, 20 + currangle * MOTOR_PULSE);
+    (*currangle) = (*currangle) - 2;
+    pwmWrite(MOTOR_PIN, 20 + (*currangle) * MOTOR_PULSE);
 }

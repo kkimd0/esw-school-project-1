@@ -5,10 +5,10 @@
 CC= gcc
 CFLAGS= -W -Wall
 TARGET= run
-LDLIBS = -lwiringPi -DRaspberryPi
+LDLIBS = -lpthread -lwiringPi -DRaspberryPi
 OBJECTS = main.o $(CURDIR)/step_motor/step_motor.o $(CURDIR)/minje_working/motor/servo_motor.o \
 	  $(CURDIR)/minje_working/warning/buzzer.o $(CURDIR)/minje_working/warning/3colorLed.o \
-	  sensor.o
+	  sensor.o $(CURDIR)/sungyj_working/LCD.o
 
 $(TARGET): $(OBJECTS)
 	sudo $(CC) $(CFLAGS) $^ $(LDLIBS) -o $@
@@ -25,6 +25,9 @@ buzzer.o: buzzer.c
 3colorLed.o: 3colorLed.c
 	$(CC) $(CFLAGS) -o $(CURDIR)/minje_working/warning/3colorLed.o -c $(CURDIR)/minje_working/warning/3colorLed.c
 
+LCD.o: LCD.c
+	$(CC) $(CFLAGS) -o $(CURDIR)/sungyj_working/LCD.o -c $(CURDIR)/sungyj_working/LCD.c
+
 sensor.o: sensor.c
 	$(CC) $(CFLAGS) -o sensor.o -c sensor.c
 
@@ -38,5 +41,6 @@ clean:
 	rm -f $(CURDIR)/minje_working/motor/servo_motor.o
 	rm -f $(CURDIR)/minje_working/warning/buzzer.o
 	rm -f $(CURDIR)/minje_working/warning/3colorLed.o
+	rm -f $(CURDIR)/sungyj_working/LCD.o
 	rm -f $(TARGET)
 

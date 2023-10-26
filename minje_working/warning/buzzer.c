@@ -1,5 +1,7 @@
 #include "buzzer.h"
 
+int8_t buzzer_flag;
+
 void init_buzzer()
 {
     
@@ -14,7 +16,7 @@ void setNote(int note)
     pwmWrite(BUZZER_PIN, MICROSECOND/note * DUTY_CYCLE);
 }
 
-void frontWarningSound()
+void *frontWarningSound()
 {
     setNote(NOTE_D6);
 
@@ -31,9 +33,10 @@ void frontWarningSound()
     pwmWrite(BUZZER_PIN,0);
     offRed();
     delay(500);
+	buzzer_flag = 0;
 }
 
-void sideLaneWarningSound()
+void *sideLaneWarningSound()
 {
     turnRed();
     for(int i = NOTE_D4; i< NOTE_G5;i++){
@@ -41,4 +44,5 @@ void sideLaneWarningSound()
         delay(10);
     }
     offRed();
+	buzzer_flag = 0;
 }
