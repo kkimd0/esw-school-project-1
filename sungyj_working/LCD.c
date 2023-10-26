@@ -12,7 +12,7 @@
 #include "LCD.h"
 
 static int32_t fd;
-enum CarState carState;
+// enum CarState carState;
 void lcd_byte(int32_t bits, int32_t mode)   {
 
   //Send byte to data pins
@@ -82,7 +82,7 @@ void usePrint_LCD(uint32_t selectString) {
   switch (selectString) {
     case 0 :
       printLCD("Warning!!", "Warning!!");
-	  usePrint_LCD(carState);
+	  // usePrint_LCD(carState);
       break;
     case 1 :
       printLCD("In Tunnel", "Auto mode");

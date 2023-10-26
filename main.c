@@ -37,6 +37,7 @@ static time_t tnow;
 static struct tm tm;
 static int8_t manual_mode;
 static int8_t isTunnelIn;
+enum CarState carState;
 	
 void module_test();
 void init()
@@ -47,6 +48,7 @@ void init()
 	init_3colorLed();
 	init_buzzer();
 	init_sensor();
+	init_LCD();
 }
 
 int8_t mainloop()
@@ -87,6 +89,7 @@ int8_t mainloop()
 		buzzer_flag = 1;
 		tnow = time(NULL);
 		tm = *localtime(&tnow);
+		
 		usePrint_LCD(0);
 		printf("[%02d:%02d:%02d] Side(%04d) Warning!!\n", tm.tm_hour, tm.tm_min, tm.tm_sec, frontDistance);
 		
@@ -112,8 +115,8 @@ int8_t mainloop()
 			usePrint_LCD(carState);
 			printf("[%02d:%02d:%02d] AutoMode Tunnel IN(Lux: %04d, Up: %04d)\n", tm.tm_hour, tm.tm_min, tm.tm_sec, luxValue, upDistance);
 			
-			/* 창문 컨트롤 스레드 */
-			/* 공조 컨트롤 스레드 */
+			/* window control thread */
+			/* air control thread */
 		}
 		else
 		{
@@ -125,6 +128,7 @@ int8_t mainloop()
 			printf("[%02d:%02d:%02d] ManualMode Tunnel IN(Lux: %04d, Up: %04d)\n", tm.tm_hour, tm.tm_min, tm.tm_sec, luxValue, upDistance);
 		}
 		
+		/* Camera Active */
 	}
 	// Tunnel Out Case
 	else if ( isTunnelIn && (luxValue <= LUX_THRESHOLD || upDistance >= UP_DISTANCE_THRESHOLD) )
@@ -146,8 +150,8 @@ int8_t mainloop()
 				exit(EXIT_FAILURE);
 			}
 			
-			/* 창문 컨트롤 스레드 */
-			/* 공조 컨트롤 스레드 */
+			/* window control thread */
+			/* air control thread */
 		}
 		else
 		{
@@ -158,13 +162,15 @@ int8_t mainloop()
 			usePrint_LCD(carState);
 			printf("[%02d:%02d:%02d] ManualMode Tunnel OUT(Lux: %04d, Up: %04d)\n", tm.tm_hour, tm.tm_min, tm.tm_sec, luxValue, upDistance);
 		}
-		
+	
+		/* Camera Deactive */
 	}
 	
-	// 리모컨 컨트롤
-	// 창문 올림
-	// 창문 내림
-	// 공조 컨트롤
+	/* Remote control
+	 * 		window up
+	 *		window down
+	 * 		air control
+	 */
 	return 0;
 }
 
@@ -176,7 +182,7 @@ int main()
 	{
 		module_test();
 	}
-
+	
 	int8_t er;
 	while ( MAINLOOP )
 	{
@@ -249,7 +255,7 @@ void module_test()
 			printf("UP: %d\n", upDistance);
 			printf("FRONT: %d\n", frontDistance);
 			printf("LUX: %d\n", luxValue);
-			printf("INFRAED: %d\n", infraedValue);
+			printf("INFRAED: %d\n", infraredValue);
 			printf("JOY_Z: %d\n", joyValue);
 		}
 		printf("sensor reading test complete\n");
