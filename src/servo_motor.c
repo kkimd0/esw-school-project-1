@@ -33,7 +33,7 @@ void *thread_window_up()
 {
 	saved_value = now_value;
 	
-	while ( servo_motor_flag && now_value < CLOSEWINDOW )
+	while ( (servo_motor_flag) && (now_value < CLOSEWINDOW) )
 	{
 		IR_Window_Up();
 	}
@@ -44,7 +44,7 @@ void *thread_window_up()
 
 void *thread_window_down()
 {
-	while ( servo_motor_flag && now_value > OPENWINDOW )
+	while ( (servo_motor_flag) && (now_value > OPENWINDOW) )
 	{
 		IR_Window_Down();
 	}
@@ -55,7 +55,7 @@ void *thread_window_down()
 
 void *thread_window_origin()
 {
-	while ( servo_motor_flag && saved_value < now_value )
+	while ( (servo_motor_flag) && (saved_value < now_value) )
 	{
 		IR_Window_Down();
 	}

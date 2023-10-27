@@ -16,12 +16,17 @@ enum CarState carState;
 
 int8_t init_sensor()
 {
+	static uint8_t er;
 	//get filedescriptor
-	if ((fd = serialOpen (DEVICE, SERIALBAUD)) < 0)
+	er = 0;
+	
+	er = (fd = serialOpen (DEVICE, SERIALBAUD));
+	if ( er < 0)
 	{
 		printf ("Unable to open serial device\n");
-		return -1; //error
 	}
+	
+	return er;
 }
  
 void read_sensor()
@@ -73,6 +78,10 @@ void read_sensor()
 			else if(strcmp(sensor, "JOY") == 0) 
 			{
 				joyValue = value;
+			}
+			else
+			{
+				;
 			}
 			
 			index_buf = 0;
