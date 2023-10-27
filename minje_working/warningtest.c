@@ -43,7 +43,7 @@ int main(){
 
         if(distance < 20){
             setAngleFast(180);
-            warningSound();
+            frontWarningSound();
         }else{
             turnGreen();
         }

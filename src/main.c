@@ -26,7 +26,7 @@
 #define LCD_TEST 		0
 /* ================================================= */
 
-#define FRONT_DISTANCE_THRESHOLD 5
+#define FRONT_DISTANCE_THRESHOLD 8
 #define UP_DISTANCE_THRESHOLD 100
 #define LEFT_JOY_THRESHOLD 250
 #define RIGHT_JOY_THRESHOLD 750
@@ -40,20 +40,30 @@ static int8_t manual_mode;
 static int8_t isTunnelIn;
 	
 void module_test();
-void init()
+int8_t init()
 {
-	wiringPiSetup();
-	wiringPiSetupGpio();
+	if (wiringPiSetup() < 0)
+	{
+		return -2;
+	}
+	if (wiringPiSetupGpio() < 0)
+	{
+		return -3;
+	}
+	if (init_sensor() < 0)
+	{
+		return -4;
+	}
 	
 	init_step_motor();
-	init_motor();
+	init_servo_motor();
 	init_3colorLed();
 	init_buzzer();
-	init_sensor();
 	init_LCD();
 	
 	carState = AUTO_OUT;
 	usePrint_LCD(carState);
+	return 0;
 }
 
 int8_t mainloop()
@@ -96,10 +106,11 @@ int8_t mainloop()
 		{
 			carState_save = carState;
 		}
+		
 		carState = SIDE_WARNING;
 	}
 	else if( (carState == FRONT_WARNING || carState == SIDE_WARNING) &&
-	((frontDistance > FRONT_DISTANCE_THRESHOLD) ||
+	((frontDistance > FRONT_DISTANCE_THRESHOLD) &&
 	(LEFT_JOY_THRESHOLD < joyValue && joyValue < RIGHT_JOY_THRESHOLD)) )
 	{
 		carState = carState_save;
@@ -152,7 +163,7 @@ int8_t mainloop()
         if(thr_id < 0)
 		{
 			perror("pthread[0] create error\n");
-			exit(EXIT_FAILURE);
+			return -1;
         }
 	}
 	else if ( !buzzer_flag && carState == SIDE_WARNING )
@@ -167,7 +178,7 @@ int8_t mainloop()
         if(thr_id < 0)
 		{
 			perror("pthread[0] create error\n");
-			exit(EXIT_FAILURE);
+			return -1;
         }
 	}
 	else if ( carState_buf != carState && carState == AUTO_IN )
@@ -183,7 +194,7 @@ int8_t mainloop()
 		if(thr_id < 0)
 		{
 			perror("pthread[1] create error\n");
-			exit(EXIT_FAILURE);
+			return -1;
 		}
 		
 		/* air control thread */
@@ -193,7 +204,7 @@ int8_t mainloop()
 		if(thr_id < 0)
 		{
 			perror("pthread[2] create error\n");
-			exit(EXIT_FAILURE);
+			return -1;
 		}
 		
 	}
@@ -217,7 +228,7 @@ int8_t mainloop()
 		if(thr_id < 0)
 		{
 			perror("pthread[1] create error\n");
-			exit(EXIT_FAILURE);
+			return -1;
 		}
 		
 		/* air control thread */
@@ -227,7 +238,7 @@ int8_t mainloop()
 		if(thr_id < 0)
 		{
 			perror("pthread[2] create error\n");
-			exit(EXIT_FAILURE);
+			return -1;
 		}
 		
 	}
@@ -266,7 +277,7 @@ int8_t mainloop()
 		if ( servo_motor_flag )
 		{
 			servo_motor_flag = 0;
-			printf("[%02d:%02d:%02d] window up stop\n", tm.tm_hour, tm.tm_min, tm.tm_sec);
+			printf("[%02d:%02d:%02d] window move stop\n", tm.tm_hour, tm.tm_min, tm.tm_sec);
 		}
 		else
 		{
@@ -276,7 +287,7 @@ int8_t mainloop()
 			if(thr_id < 0)
 			{
 				perror("pthread[1] create error\n");
-				exit(EXIT_FAILURE);
+				return -1;
 			}
 			printf("[%02d:%02d:%02d] window up\n", tm.tm_hour, tm.tm_min, tm.tm_sec);
 		}
@@ -286,7 +297,7 @@ int8_t mainloop()
 		if(thr_id < 0)
 		{
 			perror("pthread[4] create error\n");
-			exit(EXIT_FAILURE);
+			return -1;
 		}
 		
 	}
@@ -298,7 +309,7 @@ int8_t mainloop()
 		if ( servo_motor_flag )
 		{
 			servo_motor_flag = 0;
-			printf("[%02d:%02d:%02d] window down stop\n", tm.tm_hour, tm.tm_min, tm.tm_sec);
+			printf("[%02d:%02d:%02d] window move stop\n", tm.tm_hour, tm.tm_min, tm.tm_sec);
 		}
 		else
 		{
@@ -308,7 +319,7 @@ int8_t mainloop()
 			if(thr_id < 0)
 			{
 				perror("pthread[1] create error\n");
-				exit(EXIT_FAILURE);
+				return -1;
 			}
 			printf("[%02d:%02d:%02d] window down\n", tm.tm_hour, tm.tm_min, tm.tm_sec);
 		}
@@ -318,7 +329,7 @@ int8_t mainloop()
 		if(thr_id < 0)
 		{
 			perror("pthread[4] create error\n");
-			exit(EXIT_FAILURE);
+			return -1;
 		}
 	}
 	/* air control */
@@ -340,7 +351,7 @@ int8_t mainloop()
 			if(thr_id < 0)
 			{
 				perror("pthread[2] create error\n");
-				exit(EXIT_FAILURE);
+				return -1;
 			}
 			printf("[%02d:%02d:%02d] air control open\n", tm.tm_hour, tm.tm_min, tm.tm_sec);
 		}
@@ -351,7 +362,7 @@ int8_t mainloop()
 			if(thr_id < 0)
 			{
 				perror("pthread[2] create error\n");
-				exit(EXIT_FAILURE);
+				return -1;
 			}
 			printf("[%02d:%02d:%02d] air control close\n", tm.tm_hour, tm.tm_min, tm.tm_sec);
 		}
@@ -360,7 +371,7 @@ int8_t mainloop()
 		if(thr_id < 0)
 		{
 			perror("pthread[4] create error\n");
-			exit(EXIT_FAILURE);
+			return -1;
 		}
 		
 	}
@@ -375,7 +386,42 @@ void switch_toggle_callback()
 
 int main()
 {
-	init();
+	int8_t er = -1;
+	while (er < 0)
+	{
+		er = init();
+		
+		if (er < 0)
+		{
+			tnow = time(NULL);
+			tm = *localtime(&tnow);
+			printf("[%02d:%02d:%02d] %s", tm.tm_hour, tm.tm_min, tm.tm_sec, "Init error: ");
+			
+			/* error list */
+			if (er == -2)
+			{
+				printf("wiringPiSetup");
+			}
+			else if(er == -3)
+			{
+				printf("wiringPiSetupGpio");
+			}
+			else if(er == -4)
+			{
+				printf("sensor");
+			}
+			
+			printf(".");
+			sleep(1);
+			printf(".");
+			sleep(1);
+			printf(".");
+			sleep(1);
+			printf("\ntry init again\n");
+			
+		}
+		
+	}
 	printf("init complete\n");
 	if ( MODULE_TEST )
 	{
@@ -385,14 +431,23 @@ int main()
 	
 	if( wiringPiISR(GPIO_MANUAL, INT_EDGE_RISING, &switch_toggle_callback) < 0 )
 	{
-		printf("%s\n", "Interrupt setup Fail");
+		tnow = time(NULL);
+		tm = *localtime(&tnow);
+		printf("[%02d:%02d:%02d] %s\n", "Interrupt setup Fail", tm.tm_hour, tm.tm_min, tm.tm_sec);
 	}
 	
-	int8_t er;
 	while ( MAINLOOP )
 	{
 		er = mainloop();
+		
+		if (er == -1)
+		{
+			tnow = time(NULL);
+			tm = *localtime(&tnow);
+			printf("[%02d:%02d:%02d] Thread error occured\n", tm.tm_hour, tm.tm_min, tm.tm_sec);
+		}
 	}
+	
 	return 0;
 }
 

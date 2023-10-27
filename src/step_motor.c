@@ -62,6 +62,7 @@ void *close_rotation()
 		cnt--;
 	}
 	
+	motor_step(0); 		// motor reset
 	step_motor_flag = 0;
 	return;
 }
@@ -74,6 +75,7 @@ void *open_rotation()
 		cnt++;
 	}
 	
+	motor_step(0); 		// motor reset
 	step_motor_flag = 0;
 	return;
 }

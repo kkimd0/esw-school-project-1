@@ -1,7 +1,7 @@
 #ifndef __SERVO_MOTOR_H__
 #define __SERVO_MOTOR_H__
 #include <wiringPi.h>
-#include "../../sensor.h"
+#include "../../src/sensor.h"
 
 #define MOTOR_PIN 12
 #define MOTOR_PULSE 0.6

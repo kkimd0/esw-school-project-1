@@ -3,8 +3,8 @@
 
 #include <wiringPi.h>
 #include "3colorLed.h"
-#include "../../sensor.h"
-// #include "../esw-school-project-1/sungyj_working/LCD.h"
+#include "../../src/sensor.h"
+#include "../../src/LCD.h"
 
 #define RAS_CLOCK 19
 #define BUZZER_PIN 13

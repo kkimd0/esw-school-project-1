@@ -3,13 +3,14 @@
 #include <wiringPi.h>
 #include "sensor.h"
 
-#define MOTOR_PIN 12
-#define MOTOR_PULSE 0.6
+#define MOTOR_PIN 16
+#define PULSE 20000
+#define OPENWINDOW 500
+#define CLOSEWINDOW 2500
+#define SET_DELAY 800
 
-void init_motor();
-void setServo();
-int setAngleFast(int angle);
-int setAngleSlow(int start, int end);
+void init_servo_motor();
+void setAngle(uint16_t value);
 
 void *thread_window_up();
 void *thread_window_down();
@@ -18,8 +19,8 @@ void *thread_window_origin();
 void IR_Window_Up();
 void IR_Window_Down();
 
-static uint16_t now_angle;
-static uint16_t saved_angle;
+static uint16_t now_value;
+static uint16_t saved_value;
 
 
 #endif

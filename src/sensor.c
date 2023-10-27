@@ -14,20 +14,13 @@ int8_t infrared_flag;
 
 enum CarState carState;
 
-void init_sensor()
+int8_t init_sensor()
 {
 	//get filedescriptor
 	if ((fd = serialOpen (DEVICE, SERIALBAUD)) < 0)
 	{
 		printf ("Unable to open serial device\n");
-		exit(1); //error
-	}
-
-	//setup GPIO in wiringPi mode
-	if (wiringPiSetup () == -1)
-	{
-		printf ("Unable to start wiringPi\n");
-		exit(1); //error
+		return -1; //error
 	}
 }
  

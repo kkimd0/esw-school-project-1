@@ -15,6 +15,8 @@
 #define IN2 24
 #define IN3 25
 #define IN4 8
+#define one
+
 static uint32_t motorDelay;
 static uint16_t cnt;
 

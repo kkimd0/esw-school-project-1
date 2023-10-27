@@ -1,54 +1,39 @@
 #include "servo_motor.h"
 #include<stdio.h>
 
-void init_motor()
+void init_servo_motor()
 {
-    pinMode ( MOTOR_PIN ,  PWM_OUTPUT ); 
-    pwmSetMode ( PWM_MODE_MS ); 
-	now_angle = 180;
-	setAngleFast(now_angle);
+	pinMode( MOTOR_PIN, OUTPUT );
+	
+	now_value = CLOSEWINDOW;
+	saved_value = CLOSEWINDOW;
+	for(int i=0; i<20; i++)
+	{
+		digitalWrite(MOTOR_PIN, 1);
+		usleep(CLOSEWINDOW);
+		digitalWrite(MOTOR_PIN, 0);
+		usleep(PULSE - CLOSEWINDOW);
+	}
+	
+	return;
 }
 
-void setServo()
+void setAngle(uint16_t value)
 {
-    pwmSetClock ( 384 ); 
-    pwmSetRange ( 1000 );
-}
-
-int setAngleFast(int angle)
-{
-    setServo();
-    pwmWrite(MOTOR_PIN, 20 + angle * MOTOR_PULSE);
-
-    return angle;
-}
-
-int setAngleSlow(int start, int end)
-{
-    setServo();
-
-    if(start <= end){
-        for(int i = start * MOTOR_PULSE; i <= end * MOTOR_PULSE; i++){
-            pwmWrite(MOTOR_PIN, i + 20);
-            delay(20);
-        }
-    }
-    else
-    {
-        for(int i = start * MOTOR_PULSE; i >= end * MOTOR_PULSE; i--){
-            pwmWrite(MOTOR_PIN, i + 20);
-            delay(20);
-        }
-    }
-
-    return end;
+	for(int i=0; i<2; i++)
+	{
+		digitalWrite(MOTOR_PIN, 1);
+		usleep(value);
+		digitalWrite(MOTOR_PIN, 0);
+		usleep(PULSE - value);
+	}
 }
 
 void *thread_window_up()
 {
-	saved_angle = now_angle;
+	saved_value = now_value;
 	
-	while ( servo_motor_flag && now_angle<=180 )
+	while ( servo_motor_flag && now_value < CLOSEWINDOW )
 	{
 		IR_Window_Up();
 	}
@@ -59,7 +44,7 @@ void *thread_window_up()
 
 void *thread_window_down()
 {
-	while ( servo_motor_flag && now_angle > 5 )
+	while ( servo_motor_flag && now_value > OPENWINDOW )
 	{
 		IR_Window_Down();
 	}
@@ -70,7 +55,7 @@ void *thread_window_down()
 
 void *thread_window_origin()
 {
-	while ( servo_motor_flag && saved_angle < now_angle )
+	while ( servo_motor_flag && saved_value < now_value )
 	{
 		IR_Window_Down();
 	}
@@ -81,20 +66,16 @@ void *thread_window_origin()
 
 void IR_Window_Up()
 {
-    setServo();
-
-    now_angle += 2;
-    pwmWrite(MOTOR_PIN, 20 + now_angle * MOTOR_PULSE);
-	delay(20);
-	
+	/* from 500 to 2500 */
+    now_value += 80;
+    setAngle(now_value);
+	usleep(SET_DELAY);
 }
 
 void IR_Window_Down()
 {
-    setServo();
-
-    now_angle -= 2;
-    pwmWrite(MOTOR_PIN, 20 + now_angle * MOTOR_PULSE);
-	delay(20);
-
+	/* from 2500 to 500 */
+    now_value -= 80;
+    setAngle(now_value);
+	usleep(SET_DELAY);
 }

@@ -58,7 +58,7 @@ extern int8_t infrared_flag;
 
 
 // init sensor setting
-void init_sensor();
+int8_t init_sensor();
 
 // read all sensor value
 void read_sensor();
