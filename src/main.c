@@ -441,6 +441,10 @@ int main()
 			{
 				printf("sensor");
 			}
+			else
+			{
+				;
+			}
 			
 			printf(".");
 			sleep(1);
