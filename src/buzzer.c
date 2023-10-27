@@ -25,6 +25,7 @@ void *frontWarningSound()
     offRed();
     delay(100);
 
+	setNote(NOTE_D6);
     turnRed();
     delay(100);
     pwmWrite(BUZZER_PIN, 0);

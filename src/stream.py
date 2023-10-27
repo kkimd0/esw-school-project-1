@@ -91,8 +91,8 @@ class StreamingServer(socketserver.ThreadingMixIn, server.HTTPServer):
 # Camera Configuration
 picam2 = Picamera2()
 picam2.configure(picam2.create_video_configuration(main={"size": (640, 480)}))
-picam2.set_controls({"Brightness": -0.4, "Sharpness": 2.0, "Contrast": 1.0, "FrameDurationLimits": (80000, 100000),
-                     "AwbMode": controls.AwbModeEnum.Indoor, "AnalogueGain": 1.0, "ExposureValue": -1.0 })
+picam2.set_controls({"Brightness": -0.3, "Sharpness": 8.0, "Contrast": 0.4, "FrameDurationLimits": (80000, 100000),
+                     "AwbMode": controls.AwbModeEnum.Auto})
 output = StreamingOutput()
 picam2.start_recording(JpegEncoder(), FileOutput(output))
 

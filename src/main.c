@@ -26,10 +26,11 @@
 #define LCD_TEST 		0
 /* ================================================= */
 
-#define FRONT_DISTANCE_THRESHOLD 8
+#define FRONT_DISTANCE_THRESHOLD_OUT 15
+#define FRONT_DISTANCE_THRESHOLD_IN 25
 #define UP_DISTANCE_THRESHOLD 100
-#define LEFT_JOY_THRESHOLD 250
-#define RIGHT_JOY_THRESHOLD 750
+#define LEFT_JOY_THRESHOLD 300
+#define RIGHT_JOY_THRESHOLD 700
 #define LUX_THRESHOLD 600
 #define OPEN_WINDOW_VALUE 180
 #define CLOSE_WINDOW_VALUE 0
@@ -38,8 +39,10 @@ static time_t tnow;
 static struct tm tm;
 static int8_t manual_mode;
 static int8_t isTunnelIn;
+static int8_t camera_flag;
 	
 void module_test();
+void *camera_off();
 int8_t init()
 {
 	if (wiringPiSetup() < 0)
@@ -63,6 +66,7 @@ int8_t init()
 	
 	carState = AUTO_OUT;
 	usePrint_LCD(carState);
+	turnBlue();
 	return 0;
 }
 
@@ -72,7 +76,7 @@ int8_t mainloop()
 	static int16_t thr_id;
 	static enum CarState carState_buf;
 	static enum CarState carState_save;
-	static int8_t camera_flag = 0;
+	static uint16_t FRONT_DISTANCE_THRESHOLD = FRONT_DISTANCE_THRESHOLD_OUT;
 	static int8_t air_control_dir = 1; // 0: close, 1: open
 	
 	read_sensor();
@@ -119,12 +123,20 @@ int8_t mainloop()
 		printf("[%02d:%02d:%02d] Warning OFF\n", tm.tm_hour, tm.tm_min, tm.tm_sec, frontDistance);
 		
 	}
+
+	/* Blue LED ON */
+	if ( (carState != FRONT_WARNING && carState != SIDE_WARNING) && !digitalRead(BLUE_PIN) )
+	{
+		offBlue();
+		turnBlue();
+	}
 	
 	// Tunnel In Case
 	if ( (carState != FRONT_WARNING && carState != SIDE_WARNING) && 
 	(luxValue > LUX_THRESHOLD && upDistance < UP_DISTANCE_THRESHOLD) )
 	{
 		isTunnelIn = 1;
+		FRONT_DISTANCE_THRESHOLD = FRONT_DISTANCE_THRESHOLD_IN;
 		if ( !manual_mode )
 		{
 			carState = AUTO_IN;
@@ -139,6 +151,7 @@ int8_t mainloop()
 	(luxValue <= LUX_THRESHOLD || upDistance >= UP_DISTANCE_THRESHOLD) )
 	{
 		isTunnelIn = 0;
+		FRONT_DISTANCE_THRESHOLD = FRONT_DISTANCE_THRESHOLD_OUT;
 		if ( !manual_mode )
 		{
 			carState = AUTO_OUT;
@@ -251,10 +264,15 @@ int8_t mainloop()
 	}
 	
 	/* Camera Deactivate */
-	if ( camera_flag && !isTunnelIn )
+	if ( camera_flag == 1 && !isTunnelIn )
 	{
-		camera_flag = 0;
-		system("kill_stream.sh");
+		camera_flag = 2;
+		thr_id = pthread_create(&pthread[1], NULL, camera_off, NULL);
+		if(thr_id < 0)
+		{
+			perror("pthread[1] create error\n");
+			return -1;
+		}
 	}
 	/* Camera Activate */
 	else if ( !camera_flag && isTunnelIn )
@@ -556,3 +574,12 @@ void module_test()
 
 	printf("All test complete\n");
 }
+
+void *camera_off()
+{
+	sleep(3);
+	system("src/kill_stream.sh");
+	camera_flag = 0;
+}
+
+
