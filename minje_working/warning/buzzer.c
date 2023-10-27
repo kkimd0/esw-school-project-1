@@ -4,12 +4,12 @@ void init_buzzer()
 {
     
     pinMode(BUZZER_PIN, PWM_OUTPUT);
-    pwmSetClock(RAS_CLOCK);
     pwmSetMode(PWM_MODE_MS);
 }
 
 void setNote(int note)
 {
+    pwmSetClock(RAS_CLOCK);
     pwmSetRange(MICROSECOND/note);
     pwmWrite(BUZZER_PIN, MICROSECOND/note * DUTY_CYCLE);
 }
