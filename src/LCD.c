@@ -82,10 +82,10 @@ void printLCD(const char *s_Line1, const char *s_Line2)  {
 void usePrint_LCD(uint32_t selectString) {
 	switch (selectString) {
 	case 0 :
-		printLCD("!! Warning !!", "Front Warning");
+		printLCD("!! Warning !!", "Too Close !!");
 		break;
 	case 1 :
-		printLCD("!! Warning !!", "Side Warning");
+		printLCD("!! Warning !!", "Lane Invasion !!");
 		break;
 	case 2 :
 		printLCD("In Tunnel", "Auto mode");
