@@ -42,6 +42,7 @@ int main(){
         printf("Distance : %d\n", distance);
 
         if(distance < 20){
+            setAngleFast(180);
             warningSound();
         }else{
             turnGreen();
