@@ -56,7 +56,7 @@ void one_cycle_reverse_rotation()
 
 void *close_rotation()
 {
-	while ( step_motor_flag && 0 < cnt)
+	while ( (step_motor_flag) && (0 < cnt) )
 	{
 		one_step_reverse_rotation();
 		cnt--;
@@ -69,7 +69,7 @@ void *close_rotation()
 
 void *open_rotation()
 {
-	while ( step_motor_flag && 255 > cnt)
+	while ( (step_motor_flag) && (255 > cnt) )
 	{
 		one_step_rotation();
 		cnt++;
