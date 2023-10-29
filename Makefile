@@ -1,6 +1,3 @@
-#packages:
-#        [ -z `dpkg -l | grep git` ] && sudo apt-get install git
-#.PHONY: packages
 
 CC= gcc
 CFLAGS= -W -Wall

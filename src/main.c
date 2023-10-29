@@ -14,16 +14,18 @@
 #include "LCD.h"
 #include "sensor.h"
 
-#define MAINLOOP		1
-#define MODULE_TEST		0
+/* Module Test is a priority */
+/* So if both are 1, then enter the main after the module test */
+#define MODULE_TEST         0
+#define MAINLOOP            1
 
 /* == if MODULE_TEST is 0, disable the test below == */
-#define STEP_MOTOR_TEST		0
-#define SERVO_MOTOR_TEST	0
-#define LED_TEST		0
-#define BUZZER_TEST		0
-#define SENSOR_READ_TEST	1
-#define LCD_TEST 		0
+#define STEP_MOTOR_TEST	    0
+#define SERVO_MOTOR_TEST    0
+#define LED_TEST            0
+#define BUZZER_TEST         0
+#define SENSOR_READ_TEST    1
+#define LCD_TEST            0
 /* ================================================= */
 
 #define FRONT_DISTANCE_THRESHOLD_OUT 15
@@ -565,7 +567,7 @@ void module_test()
 	if ( LED_TEST )
 	{
 		printf("3LED turn green\n");
-    		turnGreen();
+    	turnGreen();
 		printf("3LED turn green complete\n");
 		
     	sleep(1);

@@ -6,6 +6,7 @@
 
 #ifndef __SENSOR_H__
 #define __SENSOR_H__
+
 //include system librarys
 #include <wiringPiI2C.h>
 #include <wiringPi.h>
