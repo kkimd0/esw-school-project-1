@@ -83,40 +83,44 @@ int8_t init()
 	return er;
 }
 
-void check_warning_func(void)
+void check_front_warning_func(void)
 {
 	// Front Warning Case
-	if ( (frontDistance < FRONT_DISTANCE_THRESHOLD) && ((carState != FRONT_WARNING) && (carState != SIDE_WARNING)) )
+	if ( ((carState != FRONT_WARNING) && (carState != SIDE_WARNING)) )
 	{
 		carState_save = carState;
-		carState = FRONT_WARNING;
 		
 	}
-	else if( (frontDistance < FRONT_DISTANCE_THRESHOLD) && ((carState == FRONT_WARNING) || (carState == SIDE_WARNING)) )
+	else
 	{
-		carState = FRONT_WARNING;
-		
+		;
 	}
+	
+	carState = FRONT_WARNING;
+}
+
+void check_side_warning_func(void)
+{
 	// Side Warning Case
-	else if ( ( (carState == AUTO_IN) || (carState == MANUAL_IN) ) &&
-	( (joyValue < LEFT_JOY_THRESHOLD) || (RIGHT_JOY_THRESHOLD < joyValue)) &&
-	((carState != FRONT_WARNING) && (carState != SIDE_WARNING)) )
+	if ( (carState != FRONT_WARNING) && (carState != SIDE_WARNING) )
 	{
 		carState_save = carState;
-		carState = SIDE_WARNING;
 		
 	}
-	else if( ( (carState == AUTO_IN) || (carState == MANUAL_IN) ) &&
-	( (joyValue < LEFT_JOY_THRESHOLD) || (RIGHT_JOY_THRESHOLD < joyValue)) &&
-	((carState != FRONT_WARNING) && (carState != SIDE_WARNING)) )
+	else
 	{
-		carState = SIDE_WARNING;
-		
+		;
 	}
+	
+	carState = SIDE_WARNING;
+}
+
+void check_warning_exit_func(void)
+{
 	// Warning State Exit Case
-	else if( ((carState == FRONT_WARNING) || (carState == SIDE_WARNING)) &&
-	( (frontDistance > FRONT_DISTANCE_THRESHOLD) &&
-	((LEFT_JOY_THRESHOLD < joyValue) && (joyValue < RIGHT_JOY_THRESHOLD)) ) )
+	if( ((carState == FRONT_WARNING) || (carState == SIDE_WARNING)) &&
+	((frontDistance > FRONT_DISTANCE_THRESHOLD) &&
+	((LEFT_JOY_THRESHOLD < joyValue) && (joyValue < RIGHT_JOY_THRESHOLD))) )
 	{
 		carState = carState_save;
 		
@@ -145,46 +149,39 @@ void check_blue_led_func(void)
 	}
 }
 
-void check_tunnel_state_func(void)
+void check_tunnel_in_func(void)
 {
 	// Tunnel In Case
-	if ( ((carState != FRONT_WARNING) && (carState != SIDE_WARNING)) && 
-	((luxValue > LUX_THRESHOLD) && (upDistance < UP_DISTANCE_THRESHOLD)) && !manual_mode )
+	isTunnelIn = 1;
+	FRONT_DISTANCE_THRESHOLD = FRONT_DISTANCE_THRESHOLD_IN;
+	
+	if ( manual_mode )
 	{
-		isTunnelIn = 1;
-		FRONT_DISTANCE_THRESHOLD = FRONT_DISTANCE_THRESHOLD_IN;
-		carState = AUTO_IN;
-		
-	}
-	else if( ((carState != FRONT_WARNING) && (carState != SIDE_WARNING)) && 
-	((luxValue > LUX_THRESHOLD) && (upDistance < UP_DISTANCE_THRESHOLD)) && manual_mode )
-	{
-		isTunnelIn = 1;
-		FRONT_DISTANCE_THRESHOLD = FRONT_DISTANCE_THRESHOLD_IN;
 		carState = MANUAL_IN;
 		
 	}
-	// Tunnel Out Case
-	else if ( ((carState != FRONT_WARNING) && (carState != SIDE_WARNING)) &&
-	((luxValue <= LUX_THRESHOLD) || (upDistance >= UP_DISTANCE_THRESHOLD)) && !manual_mode )
+	else 
 	{
-		isTunnelIn = 0;
-		FRONT_DISTANCE_THRESHOLD = FRONT_DISTANCE_THRESHOLD_OUT;
-		carState = AUTO_OUT;
+		carState = AUTO_IN;
 		
 	}
-	else if( ((carState != FRONT_WARNING) && (carState != SIDE_WARNING)) &&
-	((luxValue <= LUX_THRESHOLD) || (upDistance >= UP_DISTANCE_THRESHOLD)) && manual_mode )
+}
+
+void check_tunnel_out_func(void)
+{
+	// Tunnel Out Case
+	isTunnelIn = 0;
+	FRONT_DISTANCE_THRESHOLD = FRONT_DISTANCE_THRESHOLD_OUT;
+	
+	if ( manual_mode )
 	{
-		isTunnelIn = 0;
-		FRONT_DISTANCE_THRESHOLD = FRONT_DISTANCE_THRESHOLD_OUT;
 		carState = MANUAL_OUT;
 		
 	}
-	
 	else
 	{
-		;
+		carState = AUTO_OUT;
+		
 	}
 }
 
@@ -450,14 +447,43 @@ void mainloop(void)
 	tnow = time(NULL);
 	tm = *localtime(&tnow);
 	
-	// Check Warning Case
-	check_warning_func();
+	// Check Front Warning Case
+	if ( (frontDistance < FRONT_DISTANCE_THRESHOLD) )
+	{
+		check_front_warning_func();
+	}
+	else
+	{
+		;
+	}
+	
+	// Check Side Warning Case
+	if ( ((carState == AUTO_IN) || (carState == MANUAL_IN)) &&
+	((joyValue < LEFT_JOY_THRESHOLD) || (RIGHT_JOY_THRESHOLD < joyValue)) )
+	{
+		check_side_warning_func();
+	}
+	else
+	{
+		;
+	}
 
+	// Check Warning Exit Case
+	check_warning_exit_func();
+	
 	// Check Blue LED ON/OFF
 	check_blue_led_func();
 	
-	// Check Tunnel IN/OUT
-	check_tunnel_state_func();
+	if ( (luxValue > LUX_THRESHOLD) && (upDistance < UP_DISTANCE_THRESHOLD) )
+	{
+		// Check Tunnel IN
+		check_tunnel_in_func();
+	}
+	else
+	{
+		// Check Tunnel OUT
+		check_tunnel_out_func();
+	}
 	
 	// Activate State Mode
 	activate_state_func();
