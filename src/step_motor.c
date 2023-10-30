@@ -67,7 +67,7 @@ void *close_rotation()
 	
 	motor_step(0); 		// motor reset
 	step_motor_flag = 0;
-	return;
+	return 0;
 }
 
 void *open_rotation()
@@ -80,7 +80,7 @@ void *open_rotation()
 	
 	motor_step(0); 		// motor reset
 	step_motor_flag = 0;
-	return;
+	return 0;
 }
 
 void set_motor_speed(uint32_t motor_delay)

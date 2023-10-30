@@ -1,6 +1,7 @@
 #include "sensor.h"
+#define INFRARED_DELAY 500000
 
-static uint32_t fd;
+static int32_t fd;
 uint32_t upDistance = 0;
 uint32_t frontDistance = 0;
 uint32_t luxValue = 0;
@@ -91,6 +92,8 @@ void read_sensor()
 
 void *infrared_contorl()
 {
-	usleep(500000);
+	usleep(INFRARED_DELAY);
 	infrared_flag = 0;
+	
+	return 0;
 }

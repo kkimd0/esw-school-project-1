@@ -6,9 +6,6 @@
 #ifndef __STEP_MOTOR_H__
 #define __STEP_MOTOR_H__
 
-#include <unistd.h>
-#include <wiringPi.h>
-#include <stdint.h>
 #include "sensor.h"
 
 #define IN1 23

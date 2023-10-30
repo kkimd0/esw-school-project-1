@@ -8,8 +8,6 @@
 #define __SENSOR_H__
 
 //include system librarys
-#include <wiringPiI2C.h>
-#include <wiringPi.h>
 #include <stdio.h> //for printf
 #include <stdint.h> //uint8_t definitions
 #include <stdlib.h> //for exit(int);
@@ -21,6 +19,7 @@
  
 //wiring Pi
 #include <wiringPi.h>
+#include <wiringPiI2C.h>
 #include <wiringSerial.h>
 
 #define SERIALBAUD 9600

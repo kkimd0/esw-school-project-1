@@ -42,7 +42,8 @@ void *thread_window_up()
 	}
 	
 	servo_motor_flag = 0;
-	return;
+	
+	return 0;
 }
 
 void *thread_window_down()
@@ -53,7 +54,8 @@ void *thread_window_down()
 	}
 	
 	servo_motor_flag = 0;
-	return;
+	
+	return 0;
 }
 
 void *thread_window_origin()
@@ -64,7 +66,8 @@ void *thread_window_origin()
 	}
 	
 	servo_motor_flag = 0;
-	return;
+	
+	return 0;
 }
 
 void IR_Window_Up()

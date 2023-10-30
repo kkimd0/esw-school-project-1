@@ -3,16 +3,15 @@
  * 1. execute init() function.
  * 2. if MODULE_TEST is 1, it'll start module test.
  * 3. if MAINLOOP is 1, main program loop will start.
- ** 4. now, error code and flag is making.
  * write by siyun
  */
 
+#include "sensor.h"
 #include "step_motor.h"
 #include "servo_motor.h"
 #include "3colorLed.h"
 #include "buzzer.h"
 #include "LCD.h"
-#include "sensor.h"
 
 /* Module Test is a priority */
 /* So if both are 1, then enter the main after the module test */
@@ -587,9 +586,9 @@ void module_test()
 	if ( SERVO_MOTOR_TEST )
 	{
 		printf("servo_motor test start\n");
-		angle(0, 180);
+		IR_Window_Down();
 		delay(200);
-		angle(180,0);
+		IR_Window_Up();
 		delay(200);
 		printf("servo_motor test complete\n");
 		
@@ -673,6 +672,8 @@ void *camera_off()
 	sleep(3);
 	system("src/kill_stream.sh");
 	camera_flag = 0;
+	
+	return 0;
 }
 
 

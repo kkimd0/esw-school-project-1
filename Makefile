@@ -3,12 +3,15 @@ CC= gcc
 CFLAGS= -W -Wall
 TARGET= run
 LDLIBS = -lpthread -lwiringPi -DRaspberryPi
-OBJECTS = $(CURDIR)/src/main.o $(CURDIR)/src/step_motor.o $(CURDIR)/src/servo_motor.o \
+OBJECTS = $(CURDIR)/src/main.o $(CURDIR)/src/sensor.o $(CURDIR)/src/step_motor.o \
 	  $(CURDIR)/src/buzzer.o $(CURDIR)/src/3colorLed.o $(CURDIR)/src/LCD.o \
-	  $(CURDIR)/src/sensor.o
+	  $(CURDIR)/src/servo_motor.o
 
 $(TARGET): $(OBJECTS)
 	sudo $(CC) $(CFLAGS) $^ $(LDLIBS) -o $@
+
+sensor.o: sensor.c
+	$(CC) $(CFLAGS) -o $(CURDIR)/src/sensor.o -c $(CURDIR)/src/sensor.c
 
 step_motor.o: step_motor.c
 	$(CC) $(CFLAGS) -o $(CURDIR)/src/step_motor.o -c $(CURDIR)/src/step_motor.c
@@ -24,9 +27,6 @@ buzzer.o: buzzer.c
 
 LCD.o: LCD.c
 	$(CC) $(CFLAGS) -o $(CURDIR)/src/LCD.o -c $(CURDIR)/src/LCD.c
-
-sensor.o: sensor.c
-	$(CC) $(CFLAGS) -o $(CURDIR)/src/sensor.o -c $(CURDIR)/src/sensor.c
 
 main.o: main.c
 	$(CC) $(CFLAGS) -o $(CURDIR)/src/main.o -c $(CURDIR)/src/main.c

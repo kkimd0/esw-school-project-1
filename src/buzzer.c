@@ -34,7 +34,7 @@ void *frontWarningSound()
 	
 	buzzer_flag = 0;
 	
-	return;
+	return 0;
 }
 
 void *sideLaneWarningSound()
@@ -49,5 +49,5 @@ void *sideLaneWarningSound()
 	pwmWrite(BUZZER_PIN, 0);
 	buzzer_flag = 0;
 	
-	return;
+	return 0;
 }
