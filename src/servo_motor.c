@@ -1,5 +1,8 @@
 #include "servo_motor.h"
-#include<stdio.h>
+#include <stdio.h>
+
+static uint16_t now_value;
+static uint16_t saved_value;
 
 void init_servo_motor()
 {

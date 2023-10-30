@@ -15,6 +15,7 @@
 #include <stdlib.h> //for exit(int);
 #include <string.h> //for errno
 #include <errno.h> //error output
+#include <unistd.h>
 #include <pthread.h>
 #include <time.h>
  

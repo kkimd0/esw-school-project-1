@@ -6,6 +6,9 @@
 #include "step_motor.h"
 void motor_step(uint8_t step);
 
+static uint32_t motorDelay;
+static uint16_t cnt;
+
 void init_step_motor()
 {
 	pinMode(IN1, OUTPUT);

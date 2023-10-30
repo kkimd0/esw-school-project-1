@@ -28,12 +28,12 @@
 #define LCD_TEST            0
 /* ================================================= */
 
-#define FRONT_DISTANCE_THRESHOLD_OUT 15
-#define FRONT_DISTANCE_THRESHOLD_IN 25
+#define FRONT_DISTANCE_THRESHOLD_OUT 4
+#define FRONT_DISTANCE_THRESHOLD_IN 7
 #define UP_DISTANCE_THRESHOLD 100
 #define LEFT_JOY_THRESHOLD 300
 #define RIGHT_JOY_THRESHOLD 700
-#define LUX_THRESHOLD 600
+#define LUX_THRESHOLD 200
 
 static pthread_t pthread[5];
 static time_t tnow;

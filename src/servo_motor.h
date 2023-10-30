@@ -19,8 +19,4 @@ void *thread_window_origin();
 void IR_Window_Up();
 void IR_Window_Down();
 
-static uint16_t now_value;
-static uint16_t saved_value;
-
-
 #endif

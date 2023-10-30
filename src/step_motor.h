@@ -16,9 +16,6 @@
 #define IN3 25
 #define IN4 8
 
-static uint32_t motorDelay;
-static uint16_t cnt;
-
 // motor setting function
 void init_step_motor();
 
