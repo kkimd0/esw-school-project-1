@@ -86,7 +86,7 @@ int8_t init()
 void check_front_warning_func(void)
 {
 	// Front Warning Case
-	if ( ((carState != FRONT_WARNING) && (carState != SIDE_WARNING)) )
+	if ( (carState != FRONT_WARNING) && (carState != SIDE_WARNING) )
 	{
 		carState_save = carState;
 		
@@ -118,14 +118,13 @@ void check_side_warning_func(void)
 void check_warning_exit_func(void)
 {
 	// Warning State Exit Case
-	if( ((carState == FRONT_WARNING) || (carState == SIDE_WARNING)) &&
-	((frontDistance > FRONT_DISTANCE_THRESHOLD) &&
+	if( ((frontDistance > FRONT_DISTANCE_THRESHOLD) &&
 	((LEFT_JOY_THRESHOLD < joyValue) && (joyValue < RIGHT_JOY_THRESHOLD))) )
 	{
 		carState = carState_save;
 		
 		usePrint_LCD(carState);
-		printf("[%02d:%02d:%02d] Warning OFF\n", tm.tm_hour, tm.tm_min, tm.tm_sec, frontDistance);
+		printf("[%02d:%02d:%02d] Warning OFF\n", tm.tm_hour, tm.tm_min, tm.tm_sec);
 		
 	}
 	
@@ -448,7 +447,7 @@ void mainloop(void)
 	tm = *localtime(&tnow);
 	
 	// Check Front Warning Case
-	if ( (frontDistance < FRONT_DISTANCE_THRESHOLD) )
+	if ( frontDistance < FRONT_DISTANCE_THRESHOLD )
 	{
 		check_front_warning_func();
 	}
@@ -459,7 +458,7 @@ void mainloop(void)
 	
 	// Check Side Warning Case
 	if ( ((carState == AUTO_IN) || (carState == MANUAL_IN)) &&
-	((joyValue < LEFT_JOY_THRESHOLD) || (RIGHT_JOY_THRESHOLD < joyValue)) )
+	((LEFT_JOY_THRESHOLD > joyValue) || (RIGHT_JOY_THRESHOLD < joyValue)) )
 	{
 		check_side_warning_func();
 	}
@@ -469,7 +468,14 @@ void mainloop(void)
 	}
 
 	// Check Warning Exit Case
-	check_warning_exit_func();
+	if ((carState == FRONT_WARNING) || (carState == SIDE_WARNING))
+	{
+		check_warning_exit_func();
+	}
+	else 
+	{
+		;
+	}
 	
 	// Check Blue LED ON/OFF
 	check_blue_led_func();
@@ -545,7 +551,7 @@ int main()
 	{
 		tnow = time(NULL);
 		tm = *localtime(&tnow);
-		printf("[%02d:%02d:%02d] %s\n", "Interrupt setup Fail", tm.tm_hour, tm.tm_min, tm.tm_sec);
+		printf("[%02d:%02d:%02d] Interrupt setup Fail\n", tm.tm_hour, tm.tm_min, tm.tm_sec);
 	}
 	
 	while ( MAINLOOP )
